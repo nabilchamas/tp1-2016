@@ -14,7 +14,7 @@ import java.util.HashMap;
 @Path("/clientes")
 public class Cliente {
 
-    private static HashMap<Integer, ClienteBean> clientes = ClienteBean.clientes;
+    public static HashMap<Integer, ClienteBean> clientes = ClienteBean.clientes;
 
 
 

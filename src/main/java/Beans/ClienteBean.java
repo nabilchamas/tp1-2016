@@ -6,6 +6,7 @@ import java.util.HashMap;
  * Created by nabil on 26/02/16.
  */
 public class ClienteBean {
+
     public static HashMap<Integer, ClienteBean> clientes = new HashMap<Integer, ClienteBean>();
 
     private Integer id;
