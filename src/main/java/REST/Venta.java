@@ -5,10 +5,7 @@ import Beans.ClienteBean;
 import Beans.ProductoBean;
 import Beans.VentaBean;
 
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -59,6 +56,13 @@ public class Venta {
             ventas.put(venta.getId(), venta);
             return Response.status(200).entity(venta).build();
         }
+    }
+
+
+    @GET
+    @Produces("application/json")
+    public Response getVentas(){
+        return Response.status(200).entity(ventas).build();
     }
 
 }

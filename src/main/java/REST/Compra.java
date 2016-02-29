@@ -4,10 +4,7 @@ import Beans.CompraBean;
 import Beans.ProductoBean;
 import Beans.ProveedorBean;
 
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,5 +47,11 @@ public class Compra {
             return Response.status(200).entity(compra).build();
         }
 
+    }
+
+    @GET
+    @Produces("application/json")
+    public Response getCompras(){
+        return Response.status(200).entity(compras).build();
     }
 }
