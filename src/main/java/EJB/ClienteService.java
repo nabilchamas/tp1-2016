@@ -40,8 +40,8 @@ public class ClienteService {
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public Object getCliente(Integer id){
         try{
-            ClienteEntity cliente = em.find(ClienteEntity.class, id.longValue());
-            return cliente;
+            return em.find(ClienteEntity.class, id.longValue());
+
         }catch (Exception e){
             e.printStackTrace();
             return "No existe el cliente.";
