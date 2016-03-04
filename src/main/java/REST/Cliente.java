@@ -1,7 +1,10 @@
 package REST;
 
 import Beans.ClienteBean;
+import EJB.ClienteService;
+import JPA.ClienteEntity;
 
+import javax.ejb.EJB;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import java.util.HashMap;
@@ -16,14 +19,16 @@ public class Cliente {
 
     public static HashMap<Integer, ClienteBean> clientes = ClienteBean.clientes;
 
+    @EJB
+    private ClienteService clienteService;
+
 
 
     @POST
     @Path("{nombre}")
     @Produces("application/json")
     public Response crearCliente(@PathParam("nombre") String nombre){
-        ClienteBean cliente = new ClienteBean(nombre);
-        clientes.put(cliente.getId(), cliente);
+        ClienteEntity cliente = clienteService.crearCliente(nombre);
 
         return Response.status(200).entity(cliente).build();
     }
@@ -31,30 +36,20 @@ public class Cliente {
     @GET
     @Produces("application/json")
     public Response getClientes(){
-        return Response.status(200).entity(clientes).build();
+        return Response.status(200).entity(clienteService.getClientes()).build();
     }
 
     @GET
     @Produces("application/json")
     @Path("{id}")
     public Response getCliente(@PathParam("id") Integer id){
-        if(clientes.containsKey(id)){
-            ClienteBean cliente = clientes.get(id);
-            return Response.status(200).entity(cliente).build();
-        }else{
-            return Response.status(200).entity("Cliente no existe.").build();
-        }
+        return Response.status(200).entity(clienteService.getCliente(id)).build();
     }
 
     @DELETE
     @Path("{id}")
     public Response borrarCliente(@PathParam("id") Integer id){
-        if(clientes.containsKey(id)) {
-            clientes.remove(id);
-            return Response.status(200).entity("Borrado exitoso.").build();
-        }else{
-            return Response.status(200).entity("Cliente no existe.").build();
-        }
+        return Response.status(200).entity(clienteService.deleteCliente(id)).build();
     }
 
 
@@ -62,12 +57,6 @@ public class Cliente {
     @Path("{id}")
     public Response actualizarCliente(@PathParam("id") Integer id,
                                       @QueryParam("nombre") String nombre){
-        if(clientes.containsKey(id)) {
-            ClienteBean cliente = clientes.get(id);
-            cliente.setNombre(nombre);
-            return Response.status(200).entity("Actualizacion exitosa.").build();
-        }else{
-            return Response.status(200).entity("Cliente no existe.").build();
-        }
+        return Response.status(200).entity(clienteService.updateCliente(id, nombre)).build();
     }
 }
