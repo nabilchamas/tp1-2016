@@ -1,6 +1,7 @@
 package JPA;
 
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * Created by nabil on 04/03/16.
@@ -13,6 +14,18 @@ import javax.persistence.*;
 public class ProveedorEntity {
     private long id;
     private String nombre;
+
+
+//    private List<ProveedorEntity> productos;
+
+//    @OneToMany(mappedBy = "proveedor",cascade = CascadeType.ALL)
+//    public List<ProveedorEntity> getProductos() {
+//        return productos;
+//    }
+
+//    public void setProductos(List<ProveedorEntity> productos) {
+//        this.productos = productos;
+//    }
 
     @Id
     @Column(name = "id")
