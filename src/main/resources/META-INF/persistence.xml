@@ -5,6 +5,7 @@
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
         <jta-data-source>java:/tp1</jta-data-source>
         <class>JPA.ClienteEntity</class>
+        <class>JPA.ProveedorEntity</class>
         <properties>
             <property name="hibernate.connection.url" value="jdbc:postgresql://localhost:5432/tp1"/>
             <property name="hibernate.connection.driver_class" value="org.postgresql.Driver"/>
