@@ -1,6 +1,7 @@
 package JPA;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,16 +17,16 @@ public class ProveedorEntity {
     private String nombre;
 
 
-//    private List<ProveedorEntity> productos;
+    private List<ProductoEntity> productos = new ArrayList<ProductoEntity>();
 
-//    @OneToMany(mappedBy = "proveedor",cascade = CascadeType.ALL)
-//    public List<ProveedorEntity> getProductos() {
-//        return productos;
-//    }
+    @OneToMany(mappedBy = "proveedor", cascade = CascadeType.ALL)
+    public List<ProductoEntity> getProductos() {
+        return productos;
+    }
 
-//    public void setProductos(List<ProveedorEntity> productos) {
-//        this.productos = productos;
-//    }
+    public void setProductos(List<ProductoEntity> productos) {
+        this.productos = productos;
+    }
 
     @Id
     @Column(name = "id")
