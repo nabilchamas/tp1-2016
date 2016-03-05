@@ -4,7 +4,9 @@ package REST;
 import Beans.ClienteBean;
 import Beans.ProductoBean;
 import Beans.VentaBean;
+import EJB.VentaService;
 
+import javax.ejb.EJB;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
@@ -22,47 +24,35 @@ public class Venta {
     private static HashMap<Integer, ClienteBean> clientes = Cliente.clientes;
     private static HashMap<Integer, VentaBean> ventas = VentaBean.ventas;
 
+
+    @EJB
+    private VentaService ventaService;
+
     @POST
     @Produces("application/json")
-    public Response crearVenta(@QueryParam("clienteId") Integer clienteId,
-                               @QueryParam("productosId")ArrayList<Integer> productosId,
-                               @QueryParam("cantidades")ArrayList<Integer> cantidades){
-        if(!clientes.containsKey(clienteId)){
-            return Response.status(200).entity("Cliente no existe.").build();
-        }else{
-            ClienteBean cliente = clientes.get(clienteId);
-            ArrayList<ProductoBean> productosVenta = new ArrayList<ProductoBean>();
-
-            Integer totalVenta=0;
-            for (int i = 0; i < productosId.size(); i++) {
-
-
-                if(productos.containsKey(productosId.get(i))){
-                    ProductoBean producto = productos.get(productosId.get(i));
-                    productosVenta.add(producto);
-                    totalVenta += producto.getPrecio() * cantidades.get(i);
-                }else{
-                    return Response.status(200).entity("Producto no existe.").build();
-                }
-            }
-
-            VentaBean venta = new VentaBean();
-
-            Integer nuevoSaldo = cliente.getSaldo() + totalVenta;
-            cliente.setSaldo(nuevoSaldo);
-
-            venta.setCliente(cliente);
-            venta.setProductos(productosVenta);
-            ventas.put(venta.getId(), venta);
-            return Response.status(200).entity(venta).build();
-        }
+    public Response crearVenta(@QueryParam("clienteId") Integer clienteId){
+        return Response.status(200).entity(ventaService.crearVenta(clienteId)).build();
     }
 
 
     @GET
     @Produces("application/json")
     public Response getVentas(){
-        return Response.status(200).entity(ventas).build();
+        return Response.status(200).entity(ventaService.getVentas()).build();
+    }
+
+    @GET
+    @Path("{id}")
+    @Produces("application/json")
+    public Response getVenta(@PathParam("id") Integer id){
+        return Response.status(200).entity(ventaService.getVenta(id)).build();
+    }
+
+
+    @DELETE
+    @Path("{id}")
+    public Response deleteVenta(@PathParam("id") Integer id){
+        return Response.status(200).entity(ventaService.deleteVenta(id)).build();
     }
 
 }
