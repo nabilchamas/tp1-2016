@@ -1,6 +1,8 @@
 package JPA;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by nabil on 04/03/16.
@@ -15,6 +17,17 @@ public class ClienteEntity {
     private long id;
     private String nombre;
     private String saldo;
+
+    private List<VentaEntity> ventas = new ArrayList<VentaEntity>();
+
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
+    public List<VentaEntity> getVentas() {
+        return ventas;
+    }
+
+    public void setVentas(List<VentaEntity> ventas) {
+        this.ventas = ventas;
+    }
 
     @Id
     @Column(name = "id")

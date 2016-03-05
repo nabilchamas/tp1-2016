@@ -1,6 +1,8 @@
 package JPA;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by nabil on 04/03/16.
@@ -17,6 +19,26 @@ public class ProductoEntity {
     private String cantidad;
 
     private ProveedorEntity proveedor;
+    private List<DetalleVentaEntity> detallesVenta = new ArrayList<DetalleVentaEntity>();
+    private List<DetalleCompraEntity> detallesCompra = new ArrayList<DetalleCompraEntity>();
+
+    @OneToMany(mappedBy = "producto", cascade = CascadeType.ALL)
+    public List<DetalleCompraEntity> getDetallesCompra() {
+        return detallesCompra;
+    }
+
+    public void setDetallesCompra(List<DetalleCompraEntity> detallesCompra) {
+        this.detallesCompra = detallesCompra;
+    }
+
+    @OneToMany(mappedBy = "producto", cascade = CascadeType.ALL)
+    public List<DetalleVentaEntity> getDetallesVenta() {
+        return detallesVenta;
+    }
+
+    public void setDetallesVenta(List<DetalleVentaEntity> detallesVenta) {
+        this.detallesVenta = detallesVenta;
+    }
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "proveedor_id")

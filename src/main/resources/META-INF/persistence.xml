@@ -9,6 +9,8 @@
         <class>JPA.ProductoEntity</class>
         <class>JPA.CompraEntity</class>
         <class>JPA.DetalleCompraEntity</class>
+        <class>JPA.DetalleVentaEntity</class>
+        <class>JPA.VentaEntity</class>
         <properties>
             <property name="hibernate.connection.url" value="jdbc:postgresql://localhost:5432/tp1"/>
             <property name="hibernate.connection.driver_class" value="org.postgresql.Driver"/>
