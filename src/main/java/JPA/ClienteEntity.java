@@ -1,5 +1,7 @@
 package JPA;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +20,7 @@ public class ClienteEntity {
     private String nombre;
     private String saldo;
 
+    @JsonIgnore
     private List<VentaEntity> ventas = new ArrayList<VentaEntity>();
 
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)

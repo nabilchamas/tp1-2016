@@ -1,5 +1,7 @@
 package JPA;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +11,9 @@ import java.util.List;
  * Created by nabil on 04/03/16.
  */
 @Entity
+@NamedQueries({
+        @NamedQuery(name = "compra.findAll", query = "select v from CompraEntity v")
+})
 @Table(name = "compra", schema = "public", catalog = "tp1")
 public class CompraEntity {
 
@@ -17,6 +22,7 @@ public class CompraEntity {
 
     private ProveedorEntity proveedor;
 
+    @JsonIgnore
     private List<DetalleCompraEntity> detalles = new ArrayList<DetalleCompraEntity>();
 
     @ManyToOne(optional = false)

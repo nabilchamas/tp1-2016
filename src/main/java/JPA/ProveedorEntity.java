@@ -22,7 +22,6 @@ public class ProveedorEntity {
     private List<ProductoEntity> productos = new ArrayList<ProductoEntity>();
 
     @OneToMany(mappedBy = "proveedor", cascade = CascadeType.ALL)
-
     public List<ProductoEntity> getProductos() {
         return productos;
     }
