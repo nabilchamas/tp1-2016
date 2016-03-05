@@ -42,4 +42,29 @@ public class CompraService {
         Query query = em.createNamedQuery("compra.findAll");
         return query.getResultList();
     }
+
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public Object getCompra(Integer id){
+        try{
+            return em.find(ProveedorEntity.class, id.longValue());
+        }catch (Exception e){
+            e.printStackTrace();
+            return "No se encuentra o no existe la compra.";
+        }
+    }
+
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public Object deleteCompra(Integer id){
+        try {
+            CompraEntity compra = em.find(CompraEntity.class, id.longValue());
+            em.remove(compra);
+            return "Compra eliminada.";
+        }catch (Exception e){
+            e.printStackTrace();
+            return "No existe o no se pudo eliminar la compra.";
+        }
+    }
+
 }

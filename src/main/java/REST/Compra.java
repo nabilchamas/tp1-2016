@@ -37,4 +37,18 @@ public class Compra {
     public Response getCompras(){
         return Response.status(200).entity(compraService.getCompras()).build();
     }
+
+
+    @GET
+    @Path("{id}")
+    @Produces("application/json")
+    public Response getCompra(@PathParam("id") Integer id){
+        return Response.status(200).entity(compraService.getCompra(id)).build();
+    }
+
+    @DELETE
+    @Path("{id}")
+    public Response deleteCompra(@PathParam("id") Integer id){
+        return Response.status(200).entity(compraService.deleteCompra(id)).build();
+    }
 }
