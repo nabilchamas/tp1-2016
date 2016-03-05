@@ -1,0 +1,597 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 9.3.10
+-- Dumped by pg_dump version 9.3.10
+-- Started on 2016-03-05 16:19:26 PYST
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+
+--
+-- TOC entry 184 (class 3079 OID 11789)
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- TOC entry 2060 (class 0 OID 0)
+-- Dependencies: 184
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+SET search_path = public, pg_catalog;
+
+--
+-- TOC entry 171 (class 1259 OID 16718)
+-- Name: cliente_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE cliente_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    MAXVALUE 9999
+    CACHE 1;
+
+
+ALTER TABLE public.cliente_seq OWNER TO postgres;
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- TOC entry 170 (class 1259 OID 16704)
+-- Name: cliente; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE cliente (
+    id bigint DEFAULT nextval('cliente_seq'::regclass) NOT NULL,
+    nombre character varying(20),
+    saldo character varying(20)
+);
+
+
+ALTER TABLE public.cliente OWNER TO postgres;
+
+--
+-- TOC entry 178 (class 1259 OID 16779)
+-- Name: compra_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE compra_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    MAXVALUE 9999
+    CACHE 1;
+
+
+ALTER TABLE public.compra_seq OWNER TO postgres;
+
+--
+-- TOC entry 176 (class 1259 OID 16773)
+-- Name: compra; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE compra (
+    id bigint DEFAULT nextval('compra_seq'::regclass) NOT NULL,
+    proveedor_id bigint
+);
+
+
+ALTER TABLE public.compra OWNER TO postgres;
+
+--
+-- TOC entry 179 (class 1259 OID 16782)
+-- Name: detalle_compra_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE detalle_compra_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    MAXVALUE 9999
+    CACHE 1;
+
+
+ALTER TABLE public.detalle_compra_seq OWNER TO postgres;
+
+--
+-- TOC entry 177 (class 1259 OID 16776)
+-- Name: detalle_compra; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE detalle_compra (
+    id bigint DEFAULT nextval('detalle_compra_seq'::regclass) NOT NULL,
+    cantidad character varying(20),
+    compra_id bigint,
+    producto_id bigint
+);
+
+
+ALTER TABLE public.detalle_compra OWNER TO postgres;
+
+--
+-- TOC entry 181 (class 1259 OID 16816)
+-- Name: detalle_venta_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE detalle_venta_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    MAXVALUE 9999
+    CACHE 1;
+
+
+ALTER TABLE public.detalle_venta_seq OWNER TO postgres;
+
+--
+-- TOC entry 183 (class 1259 OID 16830)
+-- Name: detalle_venta; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE detalle_venta (
+    id bigint DEFAULT nextval('detalle_venta_seq'::regclass) NOT NULL,
+    cantidad character varying(20),
+    venta_id bigint,
+    producto_id bigint
+);
+
+
+ALTER TABLE public.detalle_venta OWNER TO postgres;
+
+--
+-- TOC entry 174 (class 1259 OID 16741)
+-- Name: producto_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE producto_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    MAXVALUE 9999
+    CACHE 1;
+
+
+ALTER TABLE public.producto_seq OWNER TO postgres;
+
+--
+-- TOC entry 175 (class 1259 OID 16761)
+-- Name: producto; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE producto (
+    id bigint DEFAULT nextval('producto_seq'::regclass) NOT NULL,
+    nombre character varying(20),
+    precio character varying(20),
+    cantidad character varying(20),
+    proveedor_id bigint
+);
+
+
+ALTER TABLE public.producto OWNER TO postgres;
+
+--
+-- TOC entry 172 (class 1259 OID 16724)
+-- Name: proveedor_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE proveedor_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    MAXVALUE 9999
+    CACHE 1;
+
+
+ALTER TABLE public.proveedor_seq OWNER TO postgres;
+
+--
+-- TOC entry 173 (class 1259 OID 16726)
+-- Name: proveedor; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE proveedor (
+    id bigint DEFAULT nextval('proveedor_seq'::regclass) NOT NULL,
+    nombre character varying(20)
+);
+
+
+ALTER TABLE public.proveedor OWNER TO postgres;
+
+--
+-- TOC entry 180 (class 1259 OID 16814)
+-- Name: venta_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE venta_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    MAXVALUE 9999
+    CACHE 1;
+
+
+ALTER TABLE public.venta_seq OWNER TO postgres;
+
+--
+-- TOC entry 182 (class 1259 OID 16818)
+-- Name: venta; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE venta (
+    id bigint DEFAULT nextval('venta_seq'::regclass) NOT NULL,
+    cliente_id bigint
+);
+
+
+ALTER TABLE public.venta OWNER TO postgres;
+
+--
+-- TOC entry 2039 (class 0 OID 16704)
+-- Dependencies: 170
+-- Data for Name: cliente; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY cliente (id, nombre, saldo) FROM stdin;
+14	nabil	0
+\.
+
+
+--
+-- TOC entry 2061 (class 0 OID 0)
+-- Dependencies: 171
+-- Name: cliente_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('cliente_seq', 15, true);
+
+
+--
+-- TOC entry 2045 (class 0 OID 16773)
+-- Dependencies: 176
+-- Data for Name: compra; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY compra (id, proveedor_id) FROM stdin;
+1	6
+2	6
+3	6
+\.
+
+
+--
+-- TOC entry 2062 (class 0 OID 0)
+-- Dependencies: 178
+-- Name: compra_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('compra_seq', 3, true);
+
+
+--
+-- TOC entry 2046 (class 0 OID 16776)
+-- Dependencies: 177
+-- Data for Name: detalle_compra; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY detalle_compra (id, cantidad, compra_id, producto_id) FROM stdin;
+\.
+
+
+--
+-- TOC entry 2063 (class 0 OID 0)
+-- Dependencies: 179
+-- Name: detalle_compra_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('detalle_compra_seq', 1, false);
+
+
+--
+-- TOC entry 2052 (class 0 OID 16830)
+-- Dependencies: 183
+-- Data for Name: detalle_venta; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY detalle_venta (id, cantidad, venta_id, producto_id) FROM stdin;
+\.
+
+
+--
+-- TOC entry 2064 (class 0 OID 0)
+-- Dependencies: 181
+-- Name: detalle_venta_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('detalle_venta_seq', 1, false);
+
+
+--
+-- TOC entry 2044 (class 0 OID 16761)
+-- Dependencies: 175
+-- Data for Name: producto; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY producto (id, nombre, precio, cantidad, proveedor_id) FROM stdin;
+4	si	3000	0	6
+5	si	3000	0	6
+6	si	3000	0	6
+7	si	3000	0	6
+8	si	3000	0	6
+9	si	3000	0	6
+10	si	3000	0	6
+11	si	3000	0	6
+12	si	3000	0	6
+13	si	3000	0	6
+14	si	3000	0	6
+15	si	3000	0	6
+16	si	3000	0	6
+17	si	3000	0	6
+18	si	3000	0	6
+\.
+
+
+--
+-- TOC entry 2065 (class 0 OID 0)
+-- Dependencies: 174
+-- Name: producto_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('producto_seq', 18, true);
+
+
+--
+-- TOC entry 2042 (class 0 OID 16726)
+-- Dependencies: 173
+-- Data for Name: proveedor; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY proveedor (id, nombre) FROM stdin;
+6	nico
+7	hans
+8	hans
+\.
+
+
+--
+-- TOC entry 2066 (class 0 OID 0)
+-- Dependencies: 172
+-- Name: proveedor_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('proveedor_seq', 8, true);
+
+
+--
+-- TOC entry 2051 (class 0 OID 16818)
+-- Dependencies: 182
+-- Data for Name: venta; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY venta (id, cliente_id) FROM stdin;
+\.
+
+
+--
+-- TOC entry 2067 (class 0 OID 0)
+-- Dependencies: 180
+-- Name: venta_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('venta_seq', 1, false);
+
+
+--
+-- TOC entry 1905 (class 2606 OID 16715)
+-- Name: cliente_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY cliente
+    ADD CONSTRAINT cliente_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 1912 (class 2606 OID 16795)
+-- Name: compra_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY compra
+    ADD CONSTRAINT compra_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 1915 (class 2606 OID 16789)
+-- Name: detalle_compra_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY detalle_compra
+    ADD CONSTRAINT detalle_compra_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 1922 (class 2606 OID 16838)
+-- Name: detalle_venta_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY detalle_venta
+    ADD CONSTRAINT detalle_venta_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 1910 (class 2606 OID 16765)
+-- Name: producto_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY producto
+    ADD CONSTRAINT producto_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 1907 (class 2606 OID 16737)
+-- Name: proveedor_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY proveedor
+    ADD CONSTRAINT proveedor_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 1920 (class 2606 OID 16822)
+-- Name: venta_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY venta
+    ADD CONSTRAINT venta_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 1918 (class 1259 OID 16828)
+-- Name: fki_cliente_fk; Type: INDEX; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE INDEX fki_cliente_fk ON venta USING btree (cliente_id);
+
+
+--
+-- TOC entry 1916 (class 1259 OID 16807)
+-- Name: fki_compra_fk; Type: INDEX; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE INDEX fki_compra_fk ON detalle_compra USING btree (compra_id);
+
+
+--
+-- TOC entry 1917 (class 1259 OID 16813)
+-- Name: fki_producto_fk; Type: INDEX; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE INDEX fki_producto_fk ON detalle_compra USING btree (producto_id);
+
+
+--
+-- TOC entry 1923 (class 1259 OID 16855)
+-- Name: fki_producto_fk_detalle; Type: INDEX; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE INDEX fki_producto_fk_detalle ON detalle_venta USING btree (producto_id);
+
+
+--
+-- TOC entry 1913 (class 1259 OID 16801)
+-- Name: fki_proveedor; Type: INDEX; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE INDEX fki_proveedor ON compra USING btree (proveedor_id);
+
+
+--
+-- TOC entry 1908 (class 1259 OID 16771)
+-- Name: fki_proveedor_fk; Type: INDEX; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE INDEX fki_proveedor_fk ON producto USING btree (proveedor_id);
+
+
+--
+-- TOC entry 1924 (class 1259 OID 16844)
+-- Name: fki_venta_fk; Type: INDEX; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE INDEX fki_venta_fk ON detalle_venta USING btree (venta_id);
+
+
+--
+-- TOC entry 1929 (class 2606 OID 16823)
+-- Name: cliente_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY venta
+    ADD CONSTRAINT cliente_fk FOREIGN KEY (cliente_id) REFERENCES cliente(id);
+
+
+--
+-- TOC entry 1927 (class 2606 OID 16802)
+-- Name: compra_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY detalle_compra
+    ADD CONSTRAINT compra_fk FOREIGN KEY (compra_id) REFERENCES compra(id);
+
+
+--
+-- TOC entry 1926 (class 2606 OID 16796)
+-- Name: fk_proveedor; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY compra
+    ADD CONSTRAINT fk_proveedor FOREIGN KEY (proveedor_id) REFERENCES proveedor(id);
+
+
+--
+-- TOC entry 1928 (class 2606 OID 16808)
+-- Name: producto_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY detalle_compra
+    ADD CONSTRAINT producto_fk FOREIGN KEY (producto_id) REFERENCES producto(id);
+
+
+--
+-- TOC entry 1931 (class 2606 OID 16850)
+-- Name: producto_fk_detalle; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY detalle_venta
+    ADD CONSTRAINT producto_fk_detalle FOREIGN KEY (producto_id) REFERENCES producto(id);
+
+
+--
+-- TOC entry 1925 (class 2606 OID 16766)
+-- Name: proveedor_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY producto
+    ADD CONSTRAINT proveedor_fk FOREIGN KEY (proveedor_id) REFERENCES proveedor(id);
+
+
+--
+-- TOC entry 1930 (class 2606 OID 16839)
+-- Name: venta_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY detalle_venta
+    ADD CONSTRAINT venta_fk FOREIGN KEY (venta_id) REFERENCES venta(id);
+
+
+--
+-- TOC entry 2059 (class 0 OID 0)
+-- Dependencies: 5
+-- Name: public; Type: ACL; Schema: -; Owner: postgres
+--
+
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
+REVOKE ALL ON SCHEMA public FROM postgres;
+GRANT ALL ON SCHEMA public TO postgres;
+GRANT ALL ON SCHEMA public TO PUBLIC;
+
+
+-- Completed on 2016-03-05 16:19:26 PYST
+
+--
+-- PostgreSQL database dump complete
+--
+
