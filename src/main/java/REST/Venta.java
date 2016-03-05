@@ -1,16 +1,12 @@
 package REST;
 
 
-import Beans.ClienteBean;
-import Beans.ProductoBean;
-import Beans.VentaBean;
 import EJB.VentaService;
 
 import javax.ejb.EJB;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
-import java.util.ArrayList;
-import java.util.HashMap;
+
 
 /**
  * Created by nabil on 29/02/16.
@@ -18,11 +14,6 @@ import java.util.HashMap;
 
 @Path("/ventas")
 public class Venta {
-
-
-    private static HashMap<Integer, ProductoBean> productos = ProductoBean.productos;
-    private static HashMap<Integer, ClienteBean> clientes = Cliente.clientes;
-    private static HashMap<Integer, VentaBean> ventas = VentaBean.ventas;
 
 
     @EJB

@@ -1,13 +1,10 @@
 package REST;
 
-import Beans.ProductoBean;
-import Beans.ProveedorBean;
 import EJB.ProductoService;
 
 import javax.ejb.EJB;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
-import java.util.HashMap;
 
 /**
  * Created by nabil on 27/02/16.
@@ -16,8 +13,6 @@ import java.util.HashMap;
 @Path("/productos")
 public class Producto {
 
-    private static HashMap<Integer, ProductoBean> productos = ProductoBean.productos;
-    private static HashMap<Integer, ProveedorBean> proveedores = ProveedorBean.proveedores;
 
     @EJB
     private ProductoService productoService;

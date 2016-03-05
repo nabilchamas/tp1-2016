@@ -1,13 +1,11 @@
 package REST;
 
-import Beans.ClienteBean;
 import EJB.ClienteService;
 import JPA.ClienteEntity;
 
 import javax.ejb.EJB;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
-import java.util.HashMap;
 
 /**
  * Created by nabil on 26/02/16.
@@ -16,8 +14,6 @@ import java.util.HashMap;
 
 @Path("/clientes")
 public class Cliente {
-
-    public static HashMap<Integer, ClienteBean> clientes = ClienteBean.clientes;
 
     @EJB
     private ClienteService clienteService;

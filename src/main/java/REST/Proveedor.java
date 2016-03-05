@@ -1,11 +1,9 @@
 package REST;
 
-import Beans.ProveedorBean;
 
 import javax.ejb.EJB;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
-import java.util.HashMap;
 import EJB.ProveedorService;
 
 /**
@@ -15,7 +13,6 @@ import EJB.ProveedorService;
 @Path("/proveedores")
 public class Proveedor {
 
-    private static HashMap<Integer, ProveedorBean> proveedores = ProveedorBean.proveedores;
 
     @EJB
     private ProveedorService proveedorService;
