@@ -35,6 +35,10 @@ public class VentaService {
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public Object crearVenta(Integer clienteId, List<Integer> productosId,
                              List<Integer> cantidades){
+        if(productosId.size()!=cantidades.size()){
+            return "Se necesita igual numero de parametros de productosId y cantidades.";
+        }
+
         try{
             VentaEntity venta = new VentaEntity();
             ClienteEntity cliente = em.find(ClienteEntity.class, clienteId.longValue());
@@ -42,6 +46,7 @@ public class VentaService {
             em.persist(venta);
             em.flush();
 
+            List<DetalleVentaEntity> detalles = new ArrayList<DetalleVentaEntity>();
             for(int i=0; i<productosId.size(); i++){
                 Integer productoId = productosId.get(i);
                 Integer cantidad = cantidades.get(i);
@@ -52,9 +57,12 @@ public class VentaService {
                 detalleVentaEntity.setCantidad(cantidad);
                 detalleVentaEntity.setVenta(venta);
 
+                detalles.add(detalleVentaEntity);
                 em.persist(detalleVentaEntity);
             }
 
+            venta.setDetalles(detalles);
+            em.persist(venta);
             return venta;
         }catch (Exception e){
             e.printStackTrace();

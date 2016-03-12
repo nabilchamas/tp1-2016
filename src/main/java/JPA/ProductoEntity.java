@@ -11,7 +11,8 @@ import java.util.List;
  */
 @Entity
 @NamedQueries({
-        @NamedQuery(name = "producto.findAll", query = "select v from ProductoEntity v")
+        @NamedQuery(name = "producto.findAll", query = "select v from ProductoEntity v"),
+        @NamedQuery(name = "producto.findByNombre", query ="select v from ProductoEntity v where v.nombre=:nombre")
 })
 @Table(name = "producto", schema = "public", catalog = "tp1")
 public class ProductoEntity {

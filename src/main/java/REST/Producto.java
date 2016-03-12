@@ -61,6 +61,14 @@ public class Producto {
     }
 
 
+//    @GET
+//    @Path("/si")
+//    @Produces("application/json")
+//    public Response getProductoByNombre(@QueryParam("nombre") String nombre){
+//        return Response.status(200).entity(productoService.getProductoByNombre(nombre)).build();
+//    }
+
+
 
 
 
