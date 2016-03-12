@@ -1,6 +1,5 @@
 package JPA;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -22,7 +21,6 @@ public class CompraEntity {
 
     private ProveedorEntity proveedor;
 
-    @JsonIgnore
     private List<DetalleCompraEntity> detalles = new ArrayList<DetalleCompraEntity>();
 
     @ManyToOne(optional = false)
@@ -35,7 +33,7 @@ public class CompraEntity {
         this.proveedor = proveedor;
     }
 
-    @OneToMany(mappedBy = "compra")
+    @OneToMany(mappedBy = "compra", fetch = FetchType.EAGER)
     public List<DetalleCompraEntity> getDetalles() {
         return detalles;
     }

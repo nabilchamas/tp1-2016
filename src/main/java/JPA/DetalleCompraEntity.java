@@ -1,5 +1,7 @@
 package JPA;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 /**
@@ -11,6 +13,7 @@ public class DetalleCompraEntity {
     private long id;
     private String cantidad;
 
+    @JsonIgnore
     private CompraEntity compra;
 
     private ProductoEntity producto;

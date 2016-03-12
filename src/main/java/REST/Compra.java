@@ -5,6 +5,7 @@ import EJB.CompraService;
 import javax.ejb.EJB;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
+import java.util.List;
 
 
 /**
@@ -20,8 +21,11 @@ public class Compra {
 
     @POST
     @Produces("application/json")
-    public Response crearCompra(@QueryParam("proveedorId") Integer proveedorId){
-        return Response.status(200).entity(compraService.crearCompra(proveedorId)).build();
+    public Response crearCompra(@QueryParam("proveedorId") Integer proveedorId,
+                                @QueryParam("productosId") List<Integer> productosId,
+                                @QueryParam("cantidades") List<Integer> cantidades){
+        return Response.status(200).entity(compraService.crearCompra(proveedorId,
+                productosId, cantidades)).build();
 
     }
 
