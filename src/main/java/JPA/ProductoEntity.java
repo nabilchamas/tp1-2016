@@ -108,9 +108,8 @@ public class ProductoEntity {
         if (id != that.id) return false;
         if (nombre != null ? !nombre.equals(that.nombre) : that.nombre != null) return false;
         if (precio != null ? !precio.equals(that.precio) : that.precio != null) return false;
-        if (cantidad != null ? !cantidad.equals(that.cantidad) : that.cantidad != null) return false;
+        return cantidad != null ? cantidad.equals(that.cantidad) : that.cantidad == null;
 
-        return true;
     }
 
     @Override

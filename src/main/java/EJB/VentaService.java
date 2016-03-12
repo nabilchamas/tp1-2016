@@ -1,12 +1,10 @@
 package EJB;
 
 
-
 import JPA.ClienteEntity;
 import JPA.DetalleVentaEntity;
 import JPA.ProductoEntity;
 import JPA.VentaEntity;
-import REST.DetalleVenta;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
