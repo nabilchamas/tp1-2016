@@ -2,6 +2,8 @@ package JPA;
 
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 /**
@@ -11,10 +13,11 @@ import javax.persistence.*;
 @Table(name = "detalle_venta", schema = "public", catalog = "tp1")
 public class DetalleVentaEntity {
     private long id;
-    private String cantidad;
-
+    private long cantidad;
+    @JsonIgnore
     private VentaEntity venta;
     private ProductoEntity producto;
+
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "producto_id")
@@ -47,13 +50,14 @@ public class DetalleVentaEntity {
         this.id = id;
     }
 
+
     @Basic
     @Column(name = "cantidad")
-    public String getCantidad() {
-        return cantidad;
+    public long getCantidad() {
+        return this.cantidad;
     }
 
-    public void setCantidad(String cantidad) {
+    public void setCantidad(long cantidad) {
         this.cantidad = cantidad;
     }
 
@@ -65,7 +69,7 @@ public class DetalleVentaEntity {
         DetalleVentaEntity that = (DetalleVentaEntity) o;
 
         if (id != that.id) return false;
-        if (cantidad != null ? !cantidad.equals(that.cantidad) : that.cantidad != null) return false;
+        if (cantidad != that.cantidad) return false;
 
         return true;
     }
@@ -73,7 +77,8 @@ public class DetalleVentaEntity {
     @Override
     public int hashCode() {
         int result = (int) (id ^ (id >>> 32));
-        result = 31 * result + (cantidad != null ? cantidad.hashCode() : 0);
+        result = 31 * result + (int) (cantidad ^ (cantidad >>> 32));
         return result;
     }
+
 }

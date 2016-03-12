@@ -19,7 +19,6 @@ public class VentaEntity {
 
     private ClienteEntity cliente;
 
-    @JsonIgnore
     private List<DetalleVentaEntity> detalles = new ArrayList<DetalleVentaEntity>();
 
     @ManyToOne(optional = false)
@@ -32,7 +31,7 @@ public class VentaEntity {
         this.cliente = cliente;
     }
 
-    @OneToMany(mappedBy = "venta", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "venta", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     public List<DetalleVentaEntity> getDetalles() {
         return detalles;
     }

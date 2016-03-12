@@ -6,6 +6,7 @@ import EJB.VentaService;
 import javax.ejb.EJB;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
+import java.util.List;
 
 
 /**
@@ -21,8 +22,11 @@ public class Venta {
 
     @POST
     @Produces("application/json")
-    public Response crearVenta(@QueryParam("clienteId") Integer clienteId){
-        return Response.status(200).entity(ventaService.crearVenta(clienteId)).build();
+    public Response crearVenta(@QueryParam("clienteId") Integer clienteId,
+                               @QueryParam("productosId") List<Integer> productosId,
+                               @QueryParam("cantidades") List<Integer> cantidades){
+        return Response.status(200).entity(ventaService.crearVenta(clienteId,
+                productosId, cantidades)).build();
     }
 
 
