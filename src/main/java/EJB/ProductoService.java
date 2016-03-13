@@ -3,6 +3,7 @@ package EJB;
 import JPA.ProductoDuplicadoEntity;
 import JPA.ProductoEntity;
 import JPA.ProveedorEntity;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -12,6 +13,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import java.io.*;
 import java.util.List;
 
 
@@ -76,7 +78,7 @@ public class ProductoService {
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public Object getProducto(Integer id){
         try{
-            return em.find(ProveedorEntity.class, id.longValue());
+            return em.find(ProductoEntity.class, id.longValue());
         }catch (Exception e){
             e.printStackTrace();
             return "No se encuentro o no existe el producto.";
@@ -127,6 +129,55 @@ public class ProductoService {
             e.printStackTrace();
             return "El producto no existe o no se pudo actualizarlo.";
         }
+    }
+
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void crearFileProductos(){
+        try{
+            File file =new File("/home/nabil/Desktop/productos");
+            if(!file.exists()){
+                file.createNewFile();
+            }else {
+                file.delete();
+                file.createNewFile();
+            }
+
+            FileWriter fw = new FileWriter(file,true);
+            BufferedWriter bw = new BufferedWriter(fw);
+            PrintWriter pw = new PrintWriter(bw);
+
+            //JSON
+            int offset=0;
+            List productos;
+            ObjectMapper mapper = new ObjectMapper();
+            String jsonString;
+            while((productos = getPorcionProductos(offset, 20)).size() > 0){
+
+                for(Object producto: productos){
+                    jsonString = mapper.writeValueAsString(producto);
+                    pw.println(jsonString);
+                }
+
+                offset += productos.size();
+            }
+
+            pw.close();
+
+            System.out.println("Data successfully appended at the end of file");
+
+        }catch(IOException ioe){
+            System.out.println("Exception occurred:");
+            ioe.printStackTrace();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+
+    }
+
+    private List getPorcionProductos(int offset, int max){
+        return em.createNamedQuery("producto.findAll").setFirstResult(offset).setMaxResults(max).getResultList();
     }
 
 

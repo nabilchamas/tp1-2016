@@ -1,10 +1,16 @@
 package REST;
 
 import EJB.ProductoService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.ejb.EJB;
 import javax.ws.rs.*;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.StreamingOutput;
+import java.io.*;
 
 /**
  * Created by nabil on 27/02/16.
@@ -61,22 +67,74 @@ public class Producto {
     }
 
 
+    @GET
+    @Path("/file/write")
+    @Produces("text/plain")
+    public Response getProductosFile(){
+        File file = new File("/home/nabil/Desktop/write");
+
+        FileOutputStream fop = null;
+        //File file;
+        String content = "This is the text content";
+
+        try {
+
+            //file = new File("/home/nabil/Desktop/hola");
+            fop = new FileOutputStream(file);
+
+            // if file doesnt exists, then create it
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+
+            // get the content in bytes
+            byte[] contentInBytes = content.getBytes();
+
+            fop.write(contentInBytes);
+            fop.flush();
+            fop.close();
+
+            System.out.println("Done");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+//        finally {
+//            try {
+//                if (fop != null) {
+//                    fop.close();
+//                }
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+
+
+        Response.ResponseBuilder response = Response.ok((Object) file);
+        response.header("Content-Disposition",
+                "attachment; filename=\"file_from_server.log\"");
+        return response.build();
+    }
+
+    @GET
+    @Path("/descargarFile")
+    @Produces("text/plain")
+    public Response appendFile(){
+        productoService.crearFileProductos();
+
+        File file = new File("/home/nabil/Desktop/productos");
+        Response.ResponseBuilder response = Response.ok((Object) file);
+        response.header("Content-Disposition",
+                "attachment; filename=\"productos\"");
+        return response.build();
+    }
+
+
 //    @GET
 //    @Path("/si")
 //    @Produces("application/json")
 //    public Response getProductoByNombre(@QueryParam("nombre") String nombre){
 //        return Response.status(200).entity(productoService.getProductoByNombre(nombre)).build();
-//    }
-
-
-
-
-
-
-
-
-
-
-
+//
 
 }
