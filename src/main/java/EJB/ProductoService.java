@@ -4,15 +4,13 @@ import JPA.ProductoDuplicadoEntity;
 import JPA.ProductoEntity;
 import JPA.ProveedorEntity;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hibernate.exception.ConstraintViolationException;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
+import javax.persistence.*;
 import java.io.*;
 import java.util.List;
 
@@ -35,31 +33,34 @@ public class ProductoService {
     public Object crearProducto(String nombre, String precio, String cantidad,
                                 Integer proveedorId){
 
-        try{
-            Query query = em.createNamedQuery("producto.findByNombre");
-            query.setParameter("nombre", nombre);
-            ProductoEntity producto = (ProductoEntity)query.getSingleResult();
+        try {
+            ProductoEntity producto = new ProductoEntity();
+            producto.setNombre(nombre);
+            producto.setPrecio(precio);
+            producto.setCantidad(cantidad);
 
-            return productoDuplicadoService.crearProductoDuplicado(producto);
-        }catch (NoResultException e){
-            try{
-                ProductoEntity producto = new ProductoEntity();
-                producto.setNombre(nombre);
-                producto.setPrecio(precio);
-                producto.setCantidad(cantidad);
+            ProveedorEntity proveedor = em.find(ProveedorEntity.class, proveedorId.longValue());
+            producto.setProveedor(proveedor);
 
-                ProveedorEntity proveedor = em.find(ProveedorEntity.class, proveedorId.longValue());
-                producto.setProveedor(proveedor);
-
-                em.persist(producto);
-                return producto;
-            }catch (Exception exc){
-                exc.printStackTrace();
-                return "No se pudo crear el producto.";
+            em.persist(producto);
+            return producto;
+        }catch (PersistenceException e){
+            Throwable t = e.getCause();
+            if(t instanceof ConstraintViolationException) {
+                try {
+                    return productoDuplicadoService.crearProductoDuplicado(nombre, precio,
+                            cantidad, proveedorId);
+                } catch (Exception exc) {
+                    exc.printStackTrace();
+                    return "No se pudo crear el producto repetido.";
+                }
             }
+
+            e.printStackTrace();
+            return "No se pudo crear el producto. PersistenceException.";
         }catch (Exception e){
             e.printStackTrace();
-            return "No se pudo crear el producto repetido.";
+            return "No se pudo crear el producto.";
         }
 
 

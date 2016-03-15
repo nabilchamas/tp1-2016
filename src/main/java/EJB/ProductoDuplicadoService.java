@@ -2,6 +2,7 @@ package EJB;
 
 import JPA.ProductoDuplicadoEntity;
 import JPA.ProductoEntity;
+import JPA.ProveedorEntity;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -22,7 +23,12 @@ public class ProductoDuplicadoService {
     private EntityManager em;
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public Object crearProductoDuplicado(ProductoEntity producto){
+    public Object crearProductoDuplicado(String nombre, String precio, String cantidadPar,
+                                         Integer proveedorId){
+        Query firstQuery = em.createNamedQuery("producto.findByNombre");
+        firstQuery.setParameter("nombre", nombre);
+        ProductoEntity producto = (ProductoEntity)firstQuery.getSingleResult();
+
         try{
             Query query = em.createNamedQuery("productoDuplicado.findByProducto");
             query.setParameter("producto", producto);
