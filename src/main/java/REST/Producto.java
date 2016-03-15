@@ -36,7 +36,13 @@ public class Producto {
     @GET
     @Produces("application/json")
     public Response getProductos(){
-        return Response.status(200).entity(productoService.getProductos()).build();
+        productoService.crearFileProductos();
+
+        File file = new File("/home/nabil/Desktop/productos");
+        return Response.status(200).entity(file).build();
+//        Response.ResponseBuilder response = Response.ok((Object) file);
+//        //response.header("Content-Disposition", "attachment; filename=\"productos\"");
+//        return response.build();
     }
 
 
@@ -67,54 +73,54 @@ public class Producto {
     }
 
 
-    @GET
-    @Path("/file/write")
-    @Produces("text/plain")
-    public Response getProductosFile(){
-        File file = new File("/home/nabil/Desktop/write");
-
-        FileOutputStream fop = null;
-        //File file;
-        String content = "This is the text content";
-
-        try {
-
-            //file = new File("/home/nabil/Desktop/hola");
-            fop = new FileOutputStream(file);
-
-            // if file doesnt exists, then create it
-            if (!file.exists()) {
-                file.createNewFile();
-            }
-
-            // get the content in bytes
-            byte[] contentInBytes = content.getBytes();
-
-            fop.write(contentInBytes);
-            fop.flush();
-            fop.close();
-
-            System.out.println("Done");
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-//        finally {
-//            try {
-//                if (fop != null) {
-//                    fop.close();
-//                }
-//            } catch (IOException e) {
-//                e.printStackTrace();
+//    @GET
+//    @Path("/file/write")
+//    @Produces("text/plain")
+//    public Response getProductosFile(){
+//        File file = new File("/home/nabil/Desktop/write");
+//
+//        FileOutputStream fop = null;
+//        //File file;
+//        String content = "This is the text content";
+//
+//        try {
+//
+//            //file = new File("/home/nabil/Desktop/hola");
+//            fop = new FileOutputStream(file);
+//
+//            // if file doesnt exists, then create it
+//            if (!file.exists()) {
+//                file.createNewFile();
 //            }
+//
+//            // get the content in bytes
+//            byte[] contentInBytes = content.getBytes();
+//
+//            fop.write(contentInBytes);
+//            fop.flush();
+//            fop.close();
+//
+//            System.out.println("Done");
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
 //        }
-
-
-        Response.ResponseBuilder response = Response.ok((Object) file);
-        response.header("Content-Disposition",
-                "attachment; filename=\"file_from_server.log\"");
-        return response.build();
-    }
+////        finally {
+////            try {
+////                if (fop != null) {
+////                    fop.close();
+////                }
+////            } catch (IOException e) {
+////                e.printStackTrace();
+////            }
+////        }
+//
+//
+//        Response.ResponseBuilder response = Response.ok((Object) file);
+//        response.header("Content-Disposition",
+//                "attachment; filename=\"file_from_server.log\"");
+//        return response.build();
+//    }
 
     @GET
     @Path("/descargarFile")
@@ -124,8 +130,7 @@ public class Producto {
 
         File file = new File("/home/nabil/Desktop/productos");
         Response.ResponseBuilder response = Response.ok((Object) file);
-        response.header("Content-Disposition",
-                "attachment; filename=\"productos\"");
+        response.header("Content-Disposition", "attachment; filename=\"productos\"");
         return response.build();
     }
 

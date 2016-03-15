@@ -148,19 +148,24 @@ public class ProductoService {
             PrintWriter pw = new PrintWriter(bw);
 
             //JSON
+            boolean empieza=true;
             int offset=0;
             List productos;
             ObjectMapper mapper = new ObjectMapper();
             String jsonString;
-            while((productos = getPorcionProductos(offset, 20)).size() > 0){
+            pw.println("[");
+            while((productos = getPorcionProductos(offset, 20)).size() > 0) {
 
-                for(Object producto: productos){
+                for (Object producto : productos) {
                     jsonString = mapper.writeValueAsString(producto);
+                    if(!empieza) pw.print(",");
                     pw.println(jsonString);
+                    empieza=false;
                 }
 
                 offset += productos.size();
             }
+            pw.println("]");
 
             pw.close();
 
