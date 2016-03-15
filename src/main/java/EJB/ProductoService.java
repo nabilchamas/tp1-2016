@@ -1,5 +1,6 @@
 package EJB;
 
+import Beans.ProductoBean;
 import JPA.ProductoDuplicadoEntity;
 import JPA.ProductoEntity;
 import JPA.ProveedorEntity;
@@ -65,6 +66,16 @@ public class ProductoService {
 
 
 
+    }
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void crearProductos(List<ProductoBean> productosBean){
+        for(ProductoBean productoBean: productosBean){
+            Object o = crearProducto(productoBean.getNombre(),
+                    productoBean.getPrecio(),
+                    productoBean.getCantidad(),
+                    productoBean.getProveedorId());
+        }
     }
 
 

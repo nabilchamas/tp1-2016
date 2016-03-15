@@ -1,5 +1,6 @@
 package REST;
 
+import Beans.ProductoBean;
 import EJB.ProductoService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -11,6 +12,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 import java.io.*;
+import java.util.List;
 
 /**
  * Created by nabil on 27/02/16.
@@ -31,6 +33,14 @@ public class Producto {
                                   @QueryParam("proveedorId") Integer proveedorId){
         return Response.status(200).entity(
                 productoService.crearProducto(nombre, precio, cantidad, proveedorId)).build();
+    }
+
+    @POST
+    @Path("/enviarJson")
+    @Consumes("application/json")
+    public Response crearProductos(List<ProductoBean> productosBean){
+        productoService.crearProductos(productosBean);
+        return Response.status(200).entity("Productos creados.").build();
     }
 
     @GET
