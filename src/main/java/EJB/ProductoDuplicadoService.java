@@ -23,8 +23,7 @@ public class ProductoDuplicadoService {
     private EntityManager em;
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public Object crearProductoDuplicado(String nombre, String precio, String cantidadPar,
-                                         Integer proveedorId){
+    public Object crearProductoDuplicado(String nombre){
         Query firstQuery = em.createNamedQuery("producto.findByNombre");
         firstQuery.setParameter("nombre", nombre);
         ProductoEntity producto = (ProductoEntity)firstQuery.getSingleResult();

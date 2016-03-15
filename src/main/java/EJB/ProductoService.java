@@ -48,8 +48,7 @@ public class ProductoService {
             Throwable t = e.getCause();
             if(t instanceof ConstraintViolationException) {
                 try {
-                    return productoDuplicadoService.crearProductoDuplicado(nombre, precio,
-                            cantidad, proveedorId);
+                    return productoDuplicadoService.crearProductoDuplicado(nombre);
                 } catch (Exception exc) {
                     exc.printStackTrace();
                     return "No se pudo crear el producto repetido.";
