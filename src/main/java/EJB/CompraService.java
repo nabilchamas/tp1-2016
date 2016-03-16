@@ -28,6 +28,10 @@ public class CompraService {
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public Object crearCompra(Integer proveedorId, List<Integer> productosId,
                               List<Integer> cantidades){
+        if(productosId.size()!=cantidades.size()){
+            return "Se necesita igual numero de parametros de productosId y cantidades.";
+        }
+
         try {
             CompraEntity compra = new CompraEntity();
             ProveedorEntity proveedor = em.find(ProveedorEntity.class, proveedorId.longValue());
