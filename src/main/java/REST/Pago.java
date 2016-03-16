@@ -1,11 +1,10 @@
 package REST;
 
-import Beans.ClienteBean;
-import Beans.PagoBean;
+import EJB.PagoService;
 
+import javax.ejb.EJB;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
-import java.util.HashMap;
 
 /**
  * Created by nabil on 29/02/16.
@@ -14,31 +13,37 @@ import java.util.HashMap;
 @Path("/pagos")
 public class Pago {
 
-    private static HashMap<Integer, PagoBean> pagos = PagoBean.pagos;
-    private static HashMap<Integer, ClienteBean> clientes = ClienteBean.clientes;
+    @EJB
+    private PagoService pagoService;
+
 
     @POST
     @Produces("application/json")
     public Response crearPago(@QueryParam("clienteId") Integer clienteId,
-                              @QueryParam("monto") Integer monto,
+                              @QueryParam("monto") String monto,
                               @QueryParam("fecha") String fecha){
-        if(!clientes.containsKey(clienteId)){
-            return Response.status(200).entity("Cliente no existe.").build();
-        }else {
-            ClienteBean cliente = clientes.get(clienteId);
-            Integer nuevoSaldo = cliente.getSaldo() - monto;
-            cliente.setSaldo(nuevoSaldo);
-
-            PagoBean pago = new PagoBean(cliente, monto, fecha);
-            pagos.put(pago.getId(), pago);
-            return Response.status(200).entity(pago).build();
-        }
+        return Response.status(200).entity(pagoService.crearPago(clienteId, monto, fecha)).build();
     }
 
 
     @GET
     @Produces("application/json")
     public Response getPagos(){
-        return Response.status(200).entity(pagos).build();
+        return Response.status(200).entity(pagoService.getPagos()).build();
     }
+
+    @GET
+    @Path("{id}")
+    @Produces("application/json")
+    public Response getPago(@PathParam("id") Integer id){
+        return Response.status(200).entity(pagoService.getPago(id)).build();
+    }
+
+    @DELETE
+    @Path("{id}")
+    public Response deletePago(@PathParam("id") Integer id){
+        return Response.status(200).entity(pagoService.deletePago(id)).build();
+    }
+
+
 }
