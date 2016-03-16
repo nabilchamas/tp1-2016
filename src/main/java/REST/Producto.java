@@ -2,6 +2,7 @@ package REST;
 
 import Beans.ProductoBean;
 import EJB.ProductoService;
+import EJB.ClienteService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.ejb.EJB;
@@ -25,6 +26,9 @@ public class Producto {
     @EJB
     private ProductoService productoService;
 
+    @EJB
+    private ClienteService clienteService;
+
     @POST
     @Produces("application/json")
     public Response crearProducto(@QueryParam("nombre") String nombre,
@@ -39,7 +43,7 @@ public class Producto {
     @Path("/enviarJson")
     @Consumes("application/json")
     public Response crearProductos(List<ProductoBean> productosBean){
-        productoService.crearProductos(productosBean);
+        clienteService.crearProductos(productosBean);
         return Response.status(200).entity("Productos creados.").build();
     }
 

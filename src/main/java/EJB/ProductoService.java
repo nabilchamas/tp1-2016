@@ -47,6 +47,7 @@ public class ProductoService {
             return producto;
         }catch (PersistenceException e){
             Throwable t = e.getCause();
+
             if(t instanceof ConstraintViolationException) {
                 try {
                     return productoDuplicadoService.crearProductoDuplicado(nombre);
@@ -68,15 +69,10 @@ public class ProductoService {
 
     }
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void crearProductos(List<ProductoBean> productosBean){
-        for(ProductoBean productoBean: productosBean){
-            Object o = crearProducto(productoBean.getNombre(),
-                    productoBean.getPrecio(),
-                    productoBean.getCantidad(),
-                    productoBean.getProveedorId());
-        }
-    }
+
+    
+
+
 
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)

@@ -2,8 +2,10 @@ package EJB;
 
 
 
+import Beans.ProductoBean;
 import JPA.ClienteEntity;
 
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -21,6 +23,9 @@ public class ClienteService {
 
     @PersistenceContext(unitName = "NewPersistenceUnit")
     private EntityManager em;
+
+    @EJB
+    private ProductoService productoService;
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public ClienteEntity crearCliente(String nombre){
@@ -72,6 +77,17 @@ public class ClienteService {
         }catch (Exception e){
             e.printStackTrace();
             return "No se pudo actualizar el cliente.";
+        }
+    }
+
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void crearProductos(List<ProductoBean> productosBean){
+        for(ProductoBean productoBean: productosBean){
+            Object o = productoService.crearProducto(productoBean.getNombre(),
+                    productoBean.getPrecio(),
+                    productoBean.getCantidad(),
+                    productoBean.getProveedorId());
         }
     }
 }
