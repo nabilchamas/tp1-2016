@@ -6,7 +6,6 @@ import JPA.ClienteEntity;
 import JPA.DetalleVentaEntity;
 import JPA.ProductoEntity;
 import JPA.VentaEntity;
-import REST.DetalleVenta;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -46,6 +45,7 @@ public class VentaService {
             em.persist(venta);
             em.flush();
 
+            Integer nuevoSaldo=Integer.parseInt(cliente.getSaldo());
             List<DetalleVentaEntity> detalles = new ArrayList<DetalleVentaEntity>();
             for(int i=0; i<productosId.size(); i++){
                 Integer productoId = productosId.get(i);
@@ -57,12 +57,17 @@ public class VentaService {
                 detalleVentaEntity.setCantidad(cantidad);
                 detalleVentaEntity.setVenta(venta);
 
+                //calcula nuevo saldo
+                nuevoSaldo += Integer.parseInt(producto.getPrecio())*cantidad;
+
                 detalles.add(detalleVentaEntity);
                 em.persist(detalleVentaEntity);
             }
+            cliente.setSaldo(nuevoSaldo.toString());
 
             venta.setDetalles(detalles);
             em.persist(venta);
+            em.persist(cliente);
             return venta;
         }catch (Exception e){
             e.printStackTrace();
