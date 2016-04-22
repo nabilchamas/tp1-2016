@@ -99,7 +99,7 @@ public class Producto {
 //
 //        try {
 //
-//            //file = new File("/home/nabil/Desktop/hola");
+//            //file = new File("/home/nabil/Desktop/");
 //            fop = new FileOutputStream(file);
 //
 //            // if file doesnt exists, then create it
@@ -143,7 +143,7 @@ public class Producto {
         productoService.crearFileProductos();
 
         File file = new File("/home/nabil/Desktop/productos");
-        Response.ResponseBuilder response = Response.ok((Object) file);
+        Response.ResponseBuilder response = Response.ok(file);
         response.header("Content-Disposition", "attachment; filename=\"productos\"");
         return response.build();
     }

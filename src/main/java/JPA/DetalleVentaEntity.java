@@ -69,9 +69,8 @@ public class DetalleVentaEntity {
         DetalleVentaEntity that = (DetalleVentaEntity) o;
 
         if (id != that.id) return false;
-        if (cantidad != that.cantidad) return false;
+        return cantidad == that.cantidad;
 
-        return true;
     }
 
     @Override

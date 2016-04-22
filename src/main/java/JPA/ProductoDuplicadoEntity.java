@@ -54,9 +54,8 @@ public class ProductoDuplicadoEntity {
         ProductoDuplicadoEntity that = (ProductoDuplicadoEntity) o;
 
         if (id != that.id) return false;
-        if (cantidad != null ? !cantidad.equals(that.cantidad) : that.cantidad != null) return false;
+        return cantidad != null ? cantidad.equals(that.cantidad) : that.cantidad == null;
 
-        return true;
     }
 
     @Override

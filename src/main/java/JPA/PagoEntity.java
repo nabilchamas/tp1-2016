@@ -67,9 +67,8 @@ public class PagoEntity {
 
         if (id != that.id) return false;
         if (monto != null ? !monto.equals(that.monto) : that.monto != null) return false;
-        if (fecha != null ? !fecha.equals(that.fecha) : that.fecha != null) return false;
+        return fecha != null ? fecha.equals(that.fecha) : that.fecha == null;
 
-        return true;
     }
 
     @Override

@@ -59,9 +59,8 @@ public class ProveedorEntity {
         ProveedorEntity that = (ProveedorEntity) o;
 
         if (id != that.id) return false;
-        if (nombre != null ? !nombre.equals(that.nombre) : that.nombre != null) return false;
+        return nombre != null ? nombre.equals(that.nombre) : that.nombre == null;
 
-        return true;
     }
 
     @Override

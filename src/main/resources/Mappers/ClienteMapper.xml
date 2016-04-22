@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+        <!DOCTYPE mapper PUBLIC '-//mybatis.org//DTD Mapper 3.0//EN'
+        'http://mybatis.org/dtd/mybatis-3-mapper.dtd'>
+<mapper namespace='Mappers.ClienteMapper'>
+    <select id='getClienteById' parameterType='long' resultType='JPA.ClienteEntity'>
+        SELECT
+        id as id,
+        nombre as nombre ,
+        saldo as saldo
+        FROM cliente
+        WHERE id = #{id}
+    </select>
+    <!-- Instead of referencing Fully Qualified Class Names we can register Aliases in mybatis-config.xml and use Alias names. -->
+    <resultMap type='ClienteEntity' id='ClienteResult'>
+        <id property='id' column='id'/>
+        <result property='nombre' column='nombre'/>
+        <result property='saldo' column='saldo'/>
+
+    </resultMap>
+    <select id='getAllClientes' resultMap='ClienteResult'>
+        SELECT * FROM cliente
+    </select>
+    <insert id='insertCliente' parameterType='Cliente' useGeneratedKeys='true' keyProperty='id'>
+        INSERT INTO USER(nombre, saldo)
+        VALUES(#{nombre}, #{saldo})
+    </insert>
+    <update id='updateCliente' parameterType='Cliente'>
+        UPDATE cliente
+        SET
+        NOMBRE= #{nombre},
+        SALDO = #{saldo},
+
+        WHERE ID = #{id}
+    </update>
+    <delete id='deleteCliente' parameterType='long'>
+        DELETE FROM USER WHERE id = #{id
+    </delete>
+</mapper>

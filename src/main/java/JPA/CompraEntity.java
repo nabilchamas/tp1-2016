@@ -60,9 +60,8 @@ public class CompraEntity {
 
         CompraEntity that = (CompraEntity) o;
 
-        if (id != that.id) return false;
+        return id == that.id;
 
-        return true;
     }
 
     @Override

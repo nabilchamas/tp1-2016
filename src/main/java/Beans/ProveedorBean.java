@@ -13,7 +13,7 @@ public class ProveedorBean {
 
     public ProveedorBean(String nombre) {
         this.nombre = nombre;
-        this.id = this.idCounter++;
+        this.id = idCounter++;
     }
 
     public Integer getId() {

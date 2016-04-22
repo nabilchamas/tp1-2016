@@ -72,9 +72,8 @@ public class ClienteEntity {
 
         if (id != that.id) return false;
         if (nombre != null ? !nombre.equals(that.nombre) : that.nombre != null) return false;
-        if (saldo != null ? !saldo.equals(that.saldo) : that.saldo != null) return false;
+        return saldo != null ? saldo.equals(that.saldo) : that.saldo == null;
 
-        return true;
     }
 
     @Override
