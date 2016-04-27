@@ -5,11 +5,7 @@ import javax.persistence.*;
 /**
  * Created by nabil on 15/03/16.
  */
-@Entity
-@NamedQueries({
-        @NamedQuery(name = "pago.findAll", query = "select v from PagoEntity v")
-})
-@Table(name = "pago", schema = "public", catalog = "tp1")
+
 public class PagoEntity {
     private long id;
     private String monto;
@@ -17,8 +13,6 @@ public class PagoEntity {
 
     private ClienteEntity cliente;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "cliente_id")
     public ClienteEntity getCliente() {
         return cliente;
     }
@@ -27,9 +21,7 @@ public class PagoEntity {
         this.cliente = cliente;
     }
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+
     public long getId() {
         return id;
     }
@@ -38,8 +30,6 @@ public class PagoEntity {
         this.id = id;
     }
 
-    @Basic
-    @Column(name = "monto")
     public String getMonto() {
         return monto;
     }
@@ -48,8 +38,7 @@ public class PagoEntity {
         this.monto = monto;
     }
 
-    @Basic
-    @Column(name = "fecha")
+
     public String getFecha() {
         return fecha;
     }

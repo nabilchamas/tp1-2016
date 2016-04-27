@@ -9,18 +9,16 @@ import javax.persistence.*;
 /**
  * Created by nabil on 05/03/16.
  */
-@Entity
-@Table(name = "detalle_venta", schema = "public", catalog = "tp1")
+
 public class DetalleVentaEntity {
     private long id;
     private long cantidad;
-    @JsonIgnore
+
     private VentaEntity venta;
     private ProductoEntity producto;
 
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "producto_id")
+
     public ProductoEntity getProducto() {
         return producto;
     }
@@ -29,8 +27,7 @@ public class DetalleVentaEntity {
         this.producto = producto;
     }
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "venta_id")
+
     public VentaEntity getVenta() {
         return venta;
     }
@@ -39,9 +36,7 @@ public class DetalleVentaEntity {
         this.venta = venta;
     }
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+
     public long getId() {
         return id;
     }
@@ -51,8 +46,7 @@ public class DetalleVentaEntity {
     }
 
 
-    @Basic
-    @Column(name = "cantidad")
+
     public long getCantidad() {
         return this.cantidad;
     }

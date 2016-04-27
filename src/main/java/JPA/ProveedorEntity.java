@@ -9,19 +9,13 @@ import java.util.List;
 /**
  * Created by nabil on 04/03/16.
  */
-@Entity
-@NamedQueries({
-        @NamedQuery(name = "proveedor.findAll", query = "select v from ProveedorEntity v")
-})
-@Table(name = "proveedor", schema = "public", catalog = "tp1")
+
 public class ProveedorEntity {
     private long id;
     private String nombre;
 
-    @JsonIgnore
     private List<ProductoEntity> productos = new ArrayList<ProductoEntity>();
 
-    @OneToMany(mappedBy = "proveedor", cascade = CascadeType.ALL)
     public List<ProductoEntity> getProductos() {
         return productos;
     }
@@ -30,9 +24,7 @@ public class ProveedorEntity {
         this.productos = productos;
     }
 
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     public long getId() {
         return id;
     }
@@ -41,8 +33,7 @@ public class ProveedorEntity {
         this.id = id;
     }
 
-    @Basic
-    @Column(name = "nombre")
+
     public String getNombre() {
         return nombre;
     }

@@ -9,12 +9,7 @@ import java.util.List;
 /**
  * Created by nabil on 04/03/16.
  */
-@Entity
-@NamedQueries({
-        @NamedQuery(name = "producto.findAll", query = "select v from ProductoEntity v"),
-        @NamedQuery(name = "producto.findByNombre", query ="select v from ProductoEntity v where v.nombre=:nombre")
-})
-@Table(name = "producto", schema = "public", catalog = "tp1")
+
 public class ProductoEntity {
     private long id;
     private String nombre;
@@ -23,13 +18,13 @@ public class ProductoEntity {
 
     private ProveedorEntity proveedor;
 
-    @JsonIgnore
+
     private List<DetalleVentaEntity> detallesVenta = new ArrayList<DetalleVentaEntity>();
 
-    @JsonIgnore
+
     private List<DetalleCompraEntity> detallesCompra = new ArrayList<DetalleCompraEntity>();
 
-    @OneToMany(mappedBy = "producto", cascade = CascadeType.ALL)
+
     public List<DetalleCompraEntity> getDetallesCompra() {
         return detallesCompra;
     }
@@ -38,7 +33,7 @@ public class ProductoEntity {
         this.detallesCompra = detallesCompra;
     }
 
-    @OneToMany(mappedBy = "producto", cascade = CascadeType.ALL)
+
     public List<DetalleVentaEntity> getDetallesVenta() {
         return detallesVenta;
     }
@@ -47,8 +42,7 @@ public class ProductoEntity {
         this.detallesVenta = detallesVenta;
     }
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "proveedor_id")
+
     public ProveedorEntity getProveedor() {
         return proveedor;
     }
@@ -57,9 +51,7 @@ public class ProductoEntity {
         this.proveedor = proveedor;
     }
 
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     public long getId() {
         return id;
     }
@@ -68,8 +60,7 @@ public class ProductoEntity {
         this.id = id;
     }
 
-    @Basic
-    @Column(name = "nombre")
+
     public String getNombre() {
         return nombre;
     }
@@ -78,8 +69,7 @@ public class ProductoEntity {
         this.nombre = nombre;
     }
 
-    @Basic
-    @Column(name = "precio")
+
     public String getPrecio() {
         return precio;
     }
@@ -88,8 +78,7 @@ public class ProductoEntity {
         this.precio = precio;
     }
 
-    @Basic
-    @Column(name = "cantidad")
+
     public String getCantidad() {
         return cantidad;
     }

@@ -5,18 +5,13 @@ import javax.persistence.*;
 /**
  * Created by nabil on 12/03/16.
  */
-@Entity
-@NamedQueries({
-        @NamedQuery(name = "productoDuplicado.findByProducto", query ="select v from ProductoDuplicadoEntity v where v.producto=:producto")
-})
-@Table(name = "producto_duplicado", schema = "public", catalog = "tp1")
+
 public class ProductoDuplicadoEntity {
     private long id;
     private Long cantidad;
     private ProductoEntity producto;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "cod_producto")
+
     public ProductoEntity getProducto() {
         return producto;
     }
@@ -25,9 +20,7 @@ public class ProductoDuplicadoEntity {
         this.producto = producto;
     }
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+
     public long getId() {
         return id;
     }
@@ -36,8 +29,7 @@ public class ProductoDuplicadoEntity {
         this.id = id;
     }
 
-    @Basic
-    @Column(name = "cantidad")
+
     public Long getCantidad() {
         return cantidad;
     }

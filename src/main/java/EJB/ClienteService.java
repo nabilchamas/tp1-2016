@@ -2,11 +2,13 @@ package EJB;
 
 
 
-import Mappers.MyBatisUtils;
 import Mappers.ClienteMapper;
 import Beans.ProductoBean;
 import JPA.ClienteEntity;
+import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -14,6 +16,9 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
 import java.util.List;
 
 /**
@@ -41,20 +46,28 @@ public class ClienteService {
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public List getClientes(){
+    public List getClientes() {
        // Query query = em.createNamedQuery("cliente.findAll");
         //return query.getResultList();
-        SqlSession sqlSession = MyBatisUtils.getSqlSessionFactory().openSession();
-        try{
+        String resource = "mybatis-config.xml";
+        InputStream inputStream = null;
+        try {
+            inputStream = Resources.getResourceAsStream(resource);
+         }catch (IOException e){
+            e.printStackTrace();
+            return null;
+
+        }
+        SqlSessionFactoryBuilder builder = new SqlSessionFactoryBuilder();
+        SqlSessionFactory factory = builder.build(inputStream);
+        SqlSession sqlSession = factory.openSession();
+
 
             ClienteMapper clienteMapper = sqlSession.getMapper(ClienteMapper.class);
             return clienteMapper.getAllClientes();
 
-        }finally{
 
-            sqlSession.close();
 
-        }
 
     }
 

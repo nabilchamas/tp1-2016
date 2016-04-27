@@ -7,19 +7,17 @@ import javax.persistence.*;
 /**
  * Created by nabil on 04/03/16.
  */
-@Entity
-@Table(name = "detalle_compra", schema = "public", catalog = "tp1")
+
 public class DetalleCompraEntity {
     private long id;
     private String cantidad;
 
-    @JsonIgnore
+
     private CompraEntity compra;
 
     private ProductoEntity producto;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "producto_id")
+
     public ProductoEntity getProducto() {
         return producto;
     }
@@ -28,8 +26,7 @@ public class DetalleCompraEntity {
         this.producto = producto;
     }
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "compra_id")
+
     public CompraEntity getCompra() {
         return compra;
     }
@@ -38,9 +35,7 @@ public class DetalleCompraEntity {
         this.compra = compra;
     }
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+
     public long getId() {
         return id;
     }
@@ -49,8 +44,7 @@ public class DetalleCompraEntity {
         this.id = id;
     }
 
-    @Basic
-    @Column(name = "cantidad")
+
     public String getCantidad() {
         return cantidad;
     }

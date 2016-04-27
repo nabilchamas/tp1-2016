@@ -9,21 +9,17 @@ import java.util.List;
 /**
  * Created by nabil on 04/03/16.
  */
-@Entity
-@NamedQueries({
-        @NamedQuery(name = "cliente.findAll", query = "select v from ClienteEntity v")
-})
-@Table(name = "cliente", schema = "public", catalog = "tp1")
+
 public class ClienteEntity {
 
     private long id;
     private String nombre;
     private String saldo;
 
-    @JsonIgnore
+
     private List<VentaEntity> ventas = new ArrayList<VentaEntity>();
 
-    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
+
     public List<VentaEntity> getVentas() {
         return ventas;
     }
@@ -32,9 +28,7 @@ public class ClienteEntity {
         this.ventas = ventas;
     }
 
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     public long getId() {
         return id;
     }
@@ -43,8 +37,7 @@ public class ClienteEntity {
         this.id = id;
     }
 
-    @Basic
-    @Column(name = "nombre")
+
     public String getNombre() {
         return nombre;
     }
@@ -53,8 +46,7 @@ public class ClienteEntity {
         this.nombre = nombre;
     }
 
-    @Basic
-    @Column(name = "saldo")
+
     public String getSaldo() {
         return saldo;
     }

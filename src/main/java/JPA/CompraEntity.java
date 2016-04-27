@@ -9,11 +9,7 @@ import java.util.List;
 /**
  * Created by nabil on 04/03/16.
  */
-@Entity
-@NamedQueries({
-        @NamedQuery(name = "compra.findAll", query = "select v from CompraEntity v")
-})
-@Table(name = "compra", schema = "public", catalog = "tp1")
+
 public class CompraEntity {
 
 
@@ -23,8 +19,7 @@ public class CompraEntity {
 
     private List<DetalleCompraEntity> detalles = new ArrayList<DetalleCompraEntity>();
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "proveedor_id")
+
     public ProveedorEntity getProveedor() {
         return proveedor;
     }
@@ -33,7 +28,7 @@ public class CompraEntity {
         this.proveedor = proveedor;
     }
 
-    @OneToMany(mappedBy = "compra", fetch = FetchType.EAGER)
+
     public List<DetalleCompraEntity> getDetalles() {
         return detalles;
     }
@@ -42,9 +37,7 @@ public class CompraEntity {
         this.detalles = detalles;
     }
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+
     public long getId() {
         return id;
     }
