@@ -82,13 +82,12 @@ public class ClienteService {
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public Object updateCliente(Integer id, String nombre){
-
-            ClienteEntity cliente = em.find(ClienteEntity.class, id.longValue());
-            cliente.setNombre(nombre);
             SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
             SqlSession sqlSession = factory.openSession();
             ClienteMapper clienteMapper = sqlSession.getMapper(ClienteMapper.class);
-            clienteMapper.updateCLiente(cliente);
+            ClienteEntity cliente = clienteMapper.getClienteById(id);
+            cliente.setNombre(nombre);
+            clienteMapper.updateCliente(cliente);
 
             return "Cliente actualizado.";
 

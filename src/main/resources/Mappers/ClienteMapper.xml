@@ -27,10 +27,10 @@
     <update id='updateCliente' parameterType='Cliente'>
         UPDATE CLIENTE
         SET
-        NOMBRE= #{nombre},
-        SALDO = #{saldo},
+        nombre= #{nombre},
+        saldo= #{saldo}
 
-        WHERE ID = #{id}
+        WHERE id = #{id}
     </update>
     <delete id='deleteCliente' parameterType='integer'>
         DELETE FROM cliente WHERE id = #{id}

@@ -13,7 +13,7 @@ public interface ClienteMapper {
         void insertCliente(ClienteEntity cliente);
         ClienteEntity getClienteById(Integer clienteId);
         List<ClienteEntity> getAllClientes();
-        void updateCLiente(ClienteEntity cliente);
+        void updateCliente(ClienteEntity cliente);
         void deleteCliente(Integer clienteId);
 
 }
