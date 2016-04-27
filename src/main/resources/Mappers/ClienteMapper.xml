@@ -11,7 +11,7 @@
         WHERE id = #{id}
     </select>
     <!-- Instead of referencing Fully Qualified Class Names we can register Aliases in mybatis-config.xml and use Alias names. -->
-    <resultMap type='ClienteEntity' id='ClienteResult'>
+    <resultMap type='cliente' id='ClienteResult'>
         <id property='id' column='id'/>
         <result property='nombre' column='nombre'/>
         <result property='saldo' column='saldo'/>
