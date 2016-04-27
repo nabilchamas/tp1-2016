@@ -63,40 +63,35 @@ public class ClienteService {
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public Object getCliente(Integer id){
-        try{
-            return em.find(ClienteEntity.class, id.longValue());
-
-        }catch (Exception e){
-            e.printStackTrace();
-            return "No existe el cliente.";
-        }
+        SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
+        SqlSession sqlSession = factory.openSession();
+        ClienteMapper clienteMapper = sqlSession.getMapper(ClienteMapper.class);
+        return clienteMapper.getClienteById(id);
     }
 
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public Object deleteCliente(Integer id){
-        try{
-            ClienteEntity cliente = em.find(ClienteEntity.class, id.longValue());
-            em.remove(cliente);
-            return "El cliente fue eliminado.";
-        }catch (Exception e){
-            e.printStackTrace();
-            return "El cliente no existe o no se pudo eliminar.";
-        }
+        SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
+        SqlSession sqlSession = factory.openSession();
+        ClienteMapper clienteMapper = sqlSession.getMapper(ClienteMapper.class);
+        clienteMapper.deleteCliente(id);
+        return "Cliente eliminado";
     }
 
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public Object updateCliente(Integer id, String nombre){
-        try{
+
             ClienteEntity cliente = em.find(ClienteEntity.class, id.longValue());
             cliente.setNombre(nombre);
-            em.persist(cliente);
+            SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
+            SqlSession sqlSession = factory.openSession();
+            ClienteMapper clienteMapper = sqlSession.getMapper(ClienteMapper.class);
+            clienteMapper.updateCLiente(cliente);
+
             return "Cliente actualizado.";
-        }catch (Exception e){
-            e.printStackTrace();
-            return "No se pudo actualizar el cliente.";
-        }
+
     }
 
 

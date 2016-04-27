@@ -2,7 +2,7 @@
         <!DOCTYPE mapper PUBLIC '-//mybatis.org//DTD Mapper 3.0//EN'
         'http://mybatis.org/dtd/mybatis-3-mapper.dtd'>
 <mapper namespace='Mappers.ClienteMapper'>
-    <select id='getClienteById' parameterType='long' resultType='JPA.ClienteEntity'>
+    <select id='getClienteById' parameterType='int' resultType='cliente'>
         SELECT
         id as id,
         nombre as nombre ,
@@ -25,14 +25,14 @@
         VALUES(#{nombre}, #{saldo})
     </insert>
     <update id='updateCliente' parameterType='Cliente'>
-        UPDATE cliente
+        UPDATE CLIENTE
         SET
         NOMBRE= #{nombre},
         SALDO = #{saldo},
 
         WHERE ID = #{id}
     </update>
-    <delete id='deleteCliente' parameterType='long'>
-        DELETE FROM USER WHERE id = #{id
+    <delete id='deleteCliente' parameterType='integer'>
+        DELETE FROM cliente WHERE id = #{id}
     </delete>
 </mapper>
