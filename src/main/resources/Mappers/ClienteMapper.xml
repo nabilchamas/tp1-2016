@@ -21,7 +21,7 @@
         SELECT * FROM cliente
     </select>
     <insert id='insertCliente' parameterType='Cliente' useGeneratedKeys='true' keyProperty='id'>
-        INSERT INTO USER(nombre, saldo)
+        INSERT INTO CLIENTE(nombre, saldo)
         VALUES(#{nombre}, #{saldo})
     </insert>
     <update id='updateCliente' parameterType='Cliente'>

@@ -5,6 +5,7 @@ package EJB;
 import Mappers.ClienteMapper;
 import Beans.ProductoBean;
 import JPA.ClienteEntity;
+import Mappers.MybatisUtils;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -41,29 +42,18 @@ public class ClienteService {
         ClienteEntity cliente = new ClienteEntity();
         cliente.setNombre(nombre);
         cliente.setSaldo("0");
-        em.persist(cliente);
+        SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
+        SqlSession sqlSession = factory.openSession();
+        ClienteMapper clienteMapper = sqlSession.getMapper(ClienteMapper.class);
+        clienteMapper.insertCliente(cliente);
         return cliente;
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public List getClientes() {
-       // Query query = em.createNamedQuery("cliente.findAll");
-        //return query.getResultList();
-        String resource = "mybatis-config.xml";
-        InputStream inputStream = null;
-        try {
-            inputStream = Resources.getResourceAsStream(resource);
-         }catch (IOException e){
-            e.printStackTrace();
-            return null;
-
-        }
-        SqlSessionFactoryBuilder builder = new SqlSessionFactoryBuilder();
-        SqlSessionFactory factory = builder.build(inputStream);
+       SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
         SqlSession sqlSession = factory.openSession();
-
-
-            ClienteMapper clienteMapper = sqlSession.getMapper(ClienteMapper.class);
+        ClienteMapper clienteMapper = sqlSession.getMapper(ClienteMapper.class);
             return clienteMapper.getAllClientes();
 
 
