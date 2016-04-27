@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC '-//mybatis.org//DTD Mapper 3.0//EN'
         'http://mybatis.org/dtd/mybatis-3-mapper.dtd'>
 <mapper namespace='Mappers.ProductoMapper'>
-    <select id='getProductoById' parameterType='long' resultType='JPA.ProductoEntity'>
+    <select id='getProductoById' parameterType='integer' resultType='Producto'>
         SELECT
         id as id,
         nombre as nombre ,
@@ -13,7 +13,7 @@
         WHERE id = #{id}
     </select>
     <!-- Instead of referencing Fully Qualified Class Names we can register Aliases in mybatis-config.xml and use Alias names. -->
-    <resultMap type='ProductoEntity' id='ProductoResult'>
+    <resultMap type='Producto' id='ProductoResult'>
         <id property='id' column='id'/>
         <result property='nombre' column='nombre'/>
         <result property='precio' column='precio'/>
@@ -25,18 +25,21 @@
         SELECT * FROM producto
     </select>
     <insert id='insertProducto' parameterType='Producto' useGeneratedKeys='true' keyProperty='id'>
-        INSERT INTO USER(nombre, saldo)
-        VALUES(#{nombre}, #{saldo})
+        INSERT INTO PRODUCTO (nombre, precio, cantidad, proveedor_id)
+        VALUES(#{nombre}, #{precio}, #{cantidad}, #{proveedor_id})
     </insert>
     <update id='updateProducto' parameterType='Producto'>
         UPDATE producto
         SET
         NOMBRE= #{nombre},
-        SALDO = #{saldo},
+       PRECIO = #{precio},
+       cantidad = #{cantidad},
+       PROVEEDOR_ID = #{proveedor_id}
+
 
         WHERE ID = #{id}
     </update>
-    <delete id='deleteProducto' parameterType='long'>
-        DELETE FROM USER WHERE id = #{id
+    <delete id='deleteProducto' parameterType='integer'>
+        DELETE FROM PRODUCTO WHERE id = #{id}
     </delete>
 </mapper>

@@ -1,6 +1,10 @@
 package EJB;
 
 import JPA.ProveedorEntity;
+import Mappers.MybatisUtils;
+import Mappers.ProveedorMapper;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -22,58 +26,57 @@ public class ProveedorService {
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public Object crearProveedor(String nombre){
-        try{
+
             ProveedorEntity proveedor = new ProveedorEntity();
             proveedor.setNombre(nombre);
-            em.persist(proveedor);
-            return proveedor;
-        }catch (Exception e){
-            e.printStackTrace();
-            return "No se pudo crear el proveedor.";
-        }
+            SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
+            SqlSession sqlSession = factory.openSession();
+            ProveedorMapper proveedorMapper = sqlSession.getMapper(ProveedorMapper.class);
+            proveedorMapper.insertProveedor(proveedor);
+            return "Proveedor creado";
     }
 
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public List getProveedores(){
-        Query query = em.createNamedQuery("proveedor.findAll");
-        return query.getResultList();
+        SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
+        SqlSession sqlSession = factory.openSession();
+        ProveedorMapper proveedorMapper = sqlSession.getMapper(ProveedorMapper.class);
+        return proveedorMapper.getAllProveedores();
+
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public Object getProveedor(Integer id){
-        try{
-            return em.find(ProveedorEntity.class, id.longValue());
-        }catch (Exception e){
-            e.printStackTrace();
-            return "No se encuentra el proveedor.";
-        }
+        SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
+        SqlSession sqlSession = factory.openSession();
+        ProveedorMapper proveedorMapper = sqlSession.getMapper(ProveedorMapper.class);
+        return proveedorMapper.getProveedorById(id);
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public Object deleteProveedor(Integer id){
-        try{
-            ProveedorEntity proveedor = em.find(ProveedorEntity.class, id.longValue());
-            em.remove(proveedor);
+        SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
+        SqlSession sqlSession = factory.openSession();
+        ProveedorMapper proveedorMapper = sqlSession.getMapper(ProveedorMapper.class);
+        proveedorMapper.deleteProveedor(id);
             return "Proveedor borrado.";
-        }catch (Exception e){
-            e.printStackTrace();
-            return "El proveedor no existe o no se pudo borrarlo.";
-        }
+
     }
 
 
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public Object updateProveedor(Integer id, String nombre){
-        try{
-            ProveedorEntity proveedor = em.find(ProveedorEntity.class, id.longValue());
+
+        SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
+        SqlSession sqlSession = factory.openSession();
+        ProveedorMapper proveedorMapper = sqlSession.getMapper(ProveedorMapper.class);
+
+            ProveedorEntity proveedor =  proveedorMapper.getProveedorById(id);
             proveedor.setNombre(nombre);
-            em.persist(proveedor);
+           proveedorMapper.updateProveedor(proveedor);
             return "Proveedor actualizado.";
-        }catch (Exception e){
-            e.printStackTrace();
-            return "El proveedor no existe o no se pudo actualizarlo.";
-        }
+
     }
 }

@@ -2,37 +2,36 @@
 <!DOCTYPE mapper PUBLIC '-//mybatis.org//DTD Mapper 3.0//EN'
         'http://mybatis.org/dtd/mybatis-3-mapper.dtd'>
 <mapper namespace='Mappers.ProveedorMapper'>
-    <select id='getProveedorById' parameterType='long' resultType='JPA.ProveedorEntity'>
+    <select id='getProveedorById' parameterType='int' resultType='Proveedor'>
         SELECT
         id as id,
-        nombre as nombre ,
-        saldo as saldo
-        FROM cliente
+        nombre as nombre
+        FROM proveedor
         WHERE id = #{id}
     </select>
     <!-- Instead of referencing Fully Qualified Class Names we can register Aliases in mybatis-config.xml and use Alias names. -->
-    <resultMap type='ProveedorEntity' id='ProveedorResult'>
+    <resultMap type='Proveedor' id='ProveedorResult'>
         <id property='id' column='id'/>
         <result property='nombre' column='nombre'/>
-        <result property='saldo' column='saldo'/>
+
 
     </resultMap>
     <select id='getAllProveedores' resultMap='ProveedorResult'>
-        SELECT * FROM cliente
+        SELECT * FROM proveedor
     </select>
     <insert id='insertProveedor' parameterType='Proveedor' useGeneratedKeys='true' keyProperty='id'>
-        INSERT INTO USER(nombre, saldo)
-        VALUES(#{nombre}, #{saldo})
+        INSERT INTO PROVEEDOR(nombre)
+        VALUES(#{nombre})
     </insert>
     <update id='updateProveedor' parameterType='Proveedor'>
-        UPDATE cliente
+        UPDATE proveedor
         SET
         NOMBRE= #{nombre},
-        SALDO = #{saldo},
+
 
         WHERE ID = #{id}
     </update>
-    <delete id='deleteProveedor' parameterType='long'>
-        DELETE FROM USER WHERE id = #{id
+    <delete id='deleteProveedor' parameterType='integer'>
+        DELETE FROM PROVEEDOR WHERE id = #{id}
     </delete>
 </mapper>
