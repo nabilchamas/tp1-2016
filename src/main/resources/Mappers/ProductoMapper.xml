@@ -2,25 +2,33 @@
 <!DOCTYPE mapper PUBLIC '-//mybatis.org//DTD Mapper 3.0//EN'
         'http://mybatis.org/dtd/mybatis-3-mapper.dtd'>
 <mapper namespace='Mappers.ProductoMapper'>
-    <select id='getProductoById' parameterType='integer' resultType='Producto'>
-        SELECT
-        id as id,
-        nombre as nombre ,
-        precio as precio,
-        cantidad as cantidad,
-        proveedor_id as proveedor.id
-        FROM producto
-        WHERE id = #{id}
-    </select>
     <!-- Instead of referencing Fully Qualified Class Names we can register Aliases in mybatis-config.xml and use Alias names. -->
     <resultMap type='Producto' id='ProductoResult'>
         <id property='id' column='id'/>
         <result property='nombre' column='nombre'/>
         <result property='precio' column='precio'/>
         <result property='cantidad' column='cantidad'/>
-        <result property='proveedor.id' column='proveedor_id'/>
+        <association property="proveedor" column="proveedor_id"
+                     resultMap="ProveedorResult"/>
 
     </resultMap>
+    <resultMap id="ProveedorResult" type="Proveedor">
+        <id property="id" column="id"/>
+        <result property='nombre' column='proveedor_name'/>
+    </resultMap>
+    <select id='getProductoById' parameterType='integer' resultMap='ProductoResult'>
+        SELECT
+        producto.id,
+        producto.nombre ,
+        precio,
+        cantidad,
+        proveedor_id,
+        proveedor.id,
+        proveedor.nombre proveedor_name
+        FROM producto  left outer JOIN  proveedor On proveedor.id = producto.proveedor_id
+        WHERE producto.id = #{id}
+    </select>
+
     <select id='getAllProductos' resultMap='ProductoResult'>
         SELECT * FROM producto
     </select>

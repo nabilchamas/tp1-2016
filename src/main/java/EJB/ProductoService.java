@@ -4,7 +4,12 @@ import Beans.ProductoBean;
 import JPA.ProductoDuplicadoEntity;
 import JPA.ProductoEntity;
 import JPA.ProveedorEntity;
+import Mappers.MybatisUtils;
+import Mappers.ProductoMapper;
+import Mappers.ProveedorMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
 import org.hibernate.exception.ConstraintViolationException;
 
 import javax.ejb.EJB;
@@ -39,11 +44,14 @@ public class ProductoService {
             producto.setNombre(nombre);
             producto.setPrecio(precio);
             producto.setCantidad(cantidad);
+            SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
+            SqlSession sqlSession = factory.openSession();
+            ProductoMapper productoMapper = sqlSession.getMapper(ProductoMapper.class);
+            ProveedorMapper proveedorMapper = sqlSession.getMapper(ProveedorMapper.class);
 
-            ProveedorEntity proveedor = em.find(ProveedorEntity.class, proveedorId.longValue());
+            ProveedorEntity proveedor = proveedorMapper.getProveedorById(proveedorId);
             producto.setProveedor(proveedor);
-
-            em.persist(producto);
+            productoMapper.insertProducto(producto);
             return producto;
         }catch (PersistenceException e){
             Throwable t = e.getCause();
@@ -77,15 +85,21 @@ public class ProductoService {
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public List getProductos(){
-        Query query = em.createNamedQuery("producto.findAll");
-        return query.getResultList();
+        SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
+        SqlSession sqlSession = factory.openSession();
+        ProductoMapper productoMapper = sqlSession.getMapper(ProductoMapper.class);
+        return productoMapper.getAllProductos();
     }
 
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public Object getProducto(Integer id){
         try{
-            return em.find(ProductoEntity.class, id.longValue());
+            SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
+            SqlSession sqlSession = factory.openSession();
+            ProductoMapper productoMapper = sqlSession.getMapper(ProductoMapper.class);
+
+            return productoMapper.getProductoById(id);
         }catch (Exception e){
             e.printStackTrace();
             return "No se encuentro o no existe el producto.";
@@ -96,8 +110,10 @@ public class ProductoService {
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public Object deleteProducto(Integer id){
         try{
-            ProductoEntity producto = em.find(ProductoEntity.class, id.longValue());
-            em.remove(producto);
+            SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
+            SqlSession sqlSession = factory.openSession();
+            ProductoMapper productoMapper = sqlSession.getMapper(ProductoMapper.class);
+            productoMapper.deleteProducto(id);
             return "El producto fue eliminado.";
         }catch (Exception e){
             e.printStackTrace();
@@ -110,7 +126,10 @@ public class ProductoService {
     public Object updateProducto(Integer id, String nombre, String precio,
                                  String cantidad, Integer proveedorId){
         try{
-            ProductoEntity producto = em.find(ProductoEntity.class, id.longValue());
+            SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
+            SqlSession sqlSession = factory.openSession();
+            ProductoMapper productoMapper = sqlSession.getMapper(ProductoMapper.class);
+            ProductoEntity producto = productoMapper.getProductoById(id);
 
             if(nombre!=null){
                 producto.setNombre(nombre);
@@ -125,12 +144,12 @@ public class ProductoService {
             }
 
             if(proveedorId!=null){
-                ProveedorEntity proveedor = em.find(ProveedorEntity.class,
-                        proveedorId.longValue());
+                ProveedorMapper proveedorMapper = sqlSession.getMapper(ProveedorMapper.class);
+                ProveedorEntity proveedor = proveedorMapper.getProveedorById(proveedorId);
                 producto.setProveedor(proveedor);
             }
 
-            em.persist(producto);
+            productoMapper.updateProducto(producto);
             return "El producto ha sido actualizado.";
         }catch (Exception e){
             e.printStackTrace();
@@ -189,7 +208,10 @@ public class ProductoService {
     }
 
     private List getPorcionProductos(int offset, int max){
-        return em.createNamedQuery("producto.findAll").setFirstResult(offset).setMaxResults(max).getResultList();
+        SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
+        SqlSession sqlSession = factory.openSession();
+        ProductoMapper productoMapper = sqlSession.getMapper(ProductoMapper.class);
+        return productoMapper.getAllProductos();
     }
 
 
