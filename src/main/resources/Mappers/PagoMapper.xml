@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE mapper PUBLIC '-//mybatis.org//DTD Mapper 3.0//EN'
+        'http://mybatis.org/dtd/mybatis-3-mapper.dtd'>
+<mapper namespace='Mappers.PagoMapper'>
+    <!-- Instead of referencing Fully Qualified Class Names we can register Aliases in mybatis-config.xml and use Alias names. -->
+    <resultMap type='Pago' id='PagoResult'>
+        <id property='id' column='id'/>
+        <result property="monto" column="monto"/>
+        <result property="fecha" column="fecha"/>
+        <association property="cliente" column="cliente_id"
+                     resultMap="ClienteResult"/>
+
+    </resultMap>
+    <resultMap id="ClienteResult" type="Cliente">
+        <id property="id" column="cliente_id"/>
+        <result property='nombre' column='cliente_name'/>
+    </resultMap>
+
+    <select id='getPagoById' parameterType='integer' resultMap='PagoResult'>
+        SELECT
+        pago.id,
+        monto,
+        fecha,
+        cliente_id,
+        cliente.nombre cliente_name
+        FROM pago  left outer JOIN  cliente On cliente.id = pago.cliente_id
+        WHERE pago.id = #{id}
+    </select>
+    <select id='getAllPagos'   resultMap='PagoResult'>
+        SELECT * FROM pago  left outer JOIN  cliente On cliente.id = pago.cliente_id
+    </select>
+    <insert id='insertPago' parameterType='Pago' useGeneratedKeys='true' keyProperty='id'>
+        INSERT INTO detalle_pago (monto, fecha, cliente_id)
+        VALUES(#{monto},#{fecha},#{cliente_id})
+    </insert>
+    <update id='updatePago' parameterType='Pago'>
+        UPDATE pago
+        SET
+        cliente_id = #{cliente.id},
+        monto = #{monto},
+        fecha = #{fecha}
+        WHERE ID = #{id}
+    </update>
+    <delete id='deletePago' parameterType='integer'>
+        DELETE FROM pago WHERE id = #{id}
+    </delete>
+</mapper>
