@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE mapper PUBLIC '-//mybatis.org//DTD Mapper 3.0//EN'
+        'http://mybatis.org/dtd/mybatis-3-mapper.dtd'>
+<mapper namespace='Mappers.CompraMapper'>
+    <!-- Instead of referencing Fully Qualified Class Names we can register Aliases in mybatis-config.xml and use Alias names. -->
+    <resultMap type='Compra' id='CompraResult'>
+        <id property='id' column='id'/>
+        <association property="proveedor" column="proveedor_id"
+                     resultMap="ProveedorResult"/>
+
+    </resultMap>
+    <resultMap id="ProveedorResult" type="Proveedor">
+        <id property="id" column="proveedor_id"/>
+        <result property='nombre' column='proveedor_name'/>
+    </resultMap>
+
+    <select id='getCompraById' parameterType='integer' resultMap='CompraResult'>
+        SELECT
+        compra.id,
+         proveedor_id,
+        proveedor.nombre proveedor_name
+        FROM compra  left outer JOIN  proveedor On proveedor.id = compra.proveedor_id
+        WHERE compra.id = #{id}
+    </select>
+<select id='getAllCompras'   resultMap='CompraResult'>
+        SELECT * FROM compra  left outer JOIN  proveedor On proveedor.id = compra.proveedor_id
+    </select>
+    <insert id='insertCompra' parameterType='Compra' useGeneratedKeys='true' keyProperty='id'>
+        INSERT INTO detalle_compra ( proveedor_id)
+        VALUES(#{proveedor_id})
+    </insert>
+    <update id='updateCompra' parameterType='Compra'>
+        UPDATE compra
+        SET
+        proveedor_id = #{proveedor.id}
+        WHERE ID = #{id}
+    </update>
+    <delete id='deleteCompra' parameterType='integer'>
+        DELETE FROM compra WHERE id = #{id}
+    </delete>
+</mapper>

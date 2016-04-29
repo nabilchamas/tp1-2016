@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE mapper PUBLIC '-//mybatis.org//DTD Mapper 3.0//EN'
+        'http://mybatis.org/dtd/mybatis-3-mapper.dtd'>
+<mapper namespace='Mappers.DetalleVentaMapper'>
+    <!-- Instead of referencing Fully Qualified Class Names we can register Aliases in mybatis-config.xml and use Alias names. -->
+    <resultMap type='DetalleVenta' id='DetalleVentaResult'>
+        <id property='id' column='id'/>
+        <result property='cantidad' column='cantidad'/>
+        <association property="producto" column="producto_id"
+                     resultMap="ProductoResult"/>
+        <association property="venta" column="venta_id"
+                     resultMap="VentaResult"/>
+
+    </resultMap>
+    <resultMap id="ProductoResult" type="Producto">
+        <id property="id" column="producto_id"/>
+        <result property='nombre' column='producto_name'/>
+        <result property='precio' column='producto_precio'/>
+        <result property='cantidad' column='producto_cantidad'/>
+    </resultMap>
+    <resultMap id="VentaResult" type="Venta">
+        <id property="id" column="venta_id"/>
+        <result property="cliente" column="cliente_id"/>
+    </resultMap>
+    <select id='getDetalleVentaById' parameterType='integer' resultMap='DetalleVentaResult'>
+        SELECT
+        detalle_venta.id,
+        detalle_venta.cantidad ,
+        venta_id ,
+        producto_id,
+        producto.nombre producto_name,
+        producto.cantidad producto_cantidad,
+        producto.precio Producto_precio
+        FROM detalle_venta  left outer JOIN  producto On detalle_venta.producto_id = producto.id
+        left outer JOIN venta ON detalle_venta.venta_id = venta.id
+        WHERE detalle_venta.id = #{id}
+    </select>
+
+    <select id='getAllDetallesVentasByProductoId' parameterType='int' resultMap='DetalleVentaResult'>
+        SELECT
+        detalle_venta.id,
+        detalle_venta.cantidad ,
+        venta_id ,
+        producto_id,
+        producto.nombre producto_name,
+        producto.cantidad producto_cantidad,
+        producto.precio Producto_precio
+        FROM detalle_venta  left outer JOIN  producto On detalle_venta.producto_id = producto.id
+        left outer JOIN venta ON detalle_venta.venta_id = venta.id
+        WHERE detalle_venta.producto_id = #{id}
+    </select>
+
+    <select id='getAllDetallesVentasByVentaId' parameterType='int' resultMap='DetalleVentaResult'>
+        SELECT
+        detalle_venta.id,
+        detalle_venta.cantidad ,
+        venta_id ,
+        producto_id,
+        producto.nombre producto_name,
+        producto.cantidad producto_cantidad,
+        producto.precio Producto_precio
+        FROM detalle_venta  left outer JOIN  producto On detalle_venta.producto_id = producto.id
+        left outer JOIN venta ON detalle_venta.venta_id = venta.id
+        WHERE detalle_venta.venta_id = #{id}
+    </select>
+
+    <select id='getAllDetallesVentas'   resultMap='DetalleVentaResult'>
+        SELECT * FROM detalle_venta left outer JOIN  producto On detalle_venta.producto_id = producto.id
+        left outer JOIN venta ON detalle_venta.venta_id = venta.id
+    </select>
+    <insert id='insertDetalleVenta' parameterType='DetalleVenta' useGeneratedKeys='true' keyProperty='id'>
+        INSERT INTO detalle_venta (cantidad, venta_id, producto_id)
+        VALUES(#{cantidad}, #{venta_id}, #{producto_id})
+    </insert>
+    <update id='updateDetalleVenta' parameterType='DetalleVenta'>
+        UPDATE detalle_venta
+        SET
+        cantidad= #{cantidad},
+        producto_id = #{producto.id},
+        venta_id = #{venta.id}
+        WHERE ID = #{id}
+    </update>
+    <delete id='deleteDetalleVenta' parameterType='integer'>
+        DELETE FROM detalle_venta WHERE id = #{id}
+    </delete>
+</mapper>

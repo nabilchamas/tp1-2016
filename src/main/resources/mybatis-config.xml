@@ -8,6 +8,12 @@
         <typeAlias type="JPA.ClienteEntity" alias="Cliente"></typeAlias>
         <typeAlias type="JPA.ProveedorEntity" alias="Proveedor"></typeAlias>
         <typeAlias type="JPA.ProductoEntity" alias="Producto"></typeAlias>
+        <typeAlias type="JPA.DetalleCompraEntity" alias="DetalleCompra"></typeAlias>
+        <typeAlias type="JPA.DetalleVentaEntity" alias="DetalleVenta"></typeAlias>
+        <typeAlias type="JPA.CompraEntity" alias="Compra"></typeAlias>
+        <typeAlias type="JPA.VentaEntity" alias="Venta"></typeAlias>
+        <typeAlias type="JPA.PagoEntity" alias="Pago"></typeAlias>
+        <typeAlias type="JPA.ProductoDuplicadoEntity" alias="ProductoDuplicado"></typeAlias>
     </typeAliases>
     <environments default="development">
         <environment id="development">
@@ -26,5 +32,11 @@
         <mapper resource="Mappers/ClienteMapper.xml"/>
         <mapper resource="Mappers/ProveedorMapper.xml"/>
         <mapper resource="Mappers/ProductoMapper.xml"/>
+        <mapper resource="Mappers/DetalleCompraMapper.xml"/>
+        <mapper resource="Mappers/DetalleVentaMapper.xml"/>
+        <mapper resource="Mappers/CompraMapper.xml"/>
+        <mapper resource="Mappers/VentaMapper.xml"/>
+        <mapper resource="Mappers/PagoMapper.xml"/>
+        <mapper resource="Mappers/ProductoDuplicadoMapper.xml"/>
     </mappers>
 </configuration>
