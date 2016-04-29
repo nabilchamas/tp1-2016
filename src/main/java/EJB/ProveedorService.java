@@ -2,9 +2,11 @@ package EJB;
 
 import JPA.ProveedorEntity;
 import Mappers.MybatisUtils;
+import Mappers.ProductoMapper;
 import Mappers.ProveedorMapper;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.exolab.castor.mapping.xml.Sql;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -42,7 +44,12 @@ public class ProveedorService {
         SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
         SqlSession sqlSession = factory.openSession();
         ProveedorMapper proveedorMapper = sqlSession.getMapper(ProveedorMapper.class);
-        return proveedorMapper.getAllProveedores();
+        ProductoMapper productoMapper = sqlSession.getMapper(ProductoMapper.class);
+        List<ProveedorEntity> listadeProveedores = proveedorMapper.getAllProveedores();
+        for(ProveedorEntity p : listadeProveedores){
+            p.setProductos(productoMapper.getAllProductosByProveedorId((int)p.getId()));
+        }
+        return listadeProveedores;
 
     }
 
@@ -51,7 +58,10 @@ public class ProveedorService {
         SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
         SqlSession sqlSession = factory.openSession();
         ProveedorMapper proveedorMapper = sqlSession.getMapper(ProveedorMapper.class);
-        return proveedorMapper.getProveedorById(id);
+        ProductoMapper productoMapper = sqlSession.getMapper(ProductoMapper.class);
+        ProveedorEntity proveedorEntity = proveedorMapper.getProveedorById(id);
+        proveedorEntity.setProductos(productoMapper.getAllProductosByProveedorId(id));
+        return proveedorEntity;
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)

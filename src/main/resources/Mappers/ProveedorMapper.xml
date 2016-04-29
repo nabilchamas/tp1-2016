@@ -2,20 +2,25 @@
 <!DOCTYPE mapper PUBLIC '-//mybatis.org//DTD Mapper 3.0//EN'
         'http://mybatis.org/dtd/mybatis-3-mapper.dtd'>
 <mapper namespace='Mappers.ProveedorMapper'>
-    <select id='getProveedorById' parameterType='int' resultType='Proveedor'>
-        SELECT
-        id as id,
-        nombre as nombre
-        FROM proveedor
-        WHERE id = #{id}
-    </select>
     <!-- Instead of referencing Fully Qualified Class Names we can register Aliases in mybatis-config.xml and use Alias names. -->
     <resultMap type='Proveedor' id='ProveedorResult'>
         <id property='id' column='id'/>
         <result property='nombre' column='nombre'/>
 
-
     </resultMap>
+
+
+
+
+    <select id='getProveedorById' parameterType='int' resultType='Proveedor'>
+        SELECT
+        proveedor.id ,
+        proveedor.nombre
+        FROM proveedor
+        WHERE proveedor.id = #{id}
+    </select>
+
+
     <select id='getAllProveedores' resultMap='ProveedorResult'>
         SELECT * FROM proveedor
     </select>

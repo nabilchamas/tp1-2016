@@ -13,7 +13,7 @@
 
     </resultMap>
     <resultMap id="ProveedorResult" type="Proveedor">
-        <id property="id" column="id"/>
+        <id property="id" column="proveedor_id"/>
         <result property='nombre' column='proveedor_name'/>
     </resultMap>
     <select id='getProductoById' parameterType='integer' resultMap='ProductoResult'>
@@ -23,13 +23,24 @@
         precio,
         cantidad,
         proveedor_id,
-        proveedor.id,
         proveedor.nombre proveedor_name
         FROM producto  left outer JOIN  proveedor On proveedor.id = producto.proveedor_id
         WHERE producto.id = #{id}
     </select>
 
-    <select id='getAllProductos' resultMap='ProductoResult'>
+    <select id='getAllProductosByProveedorId' parameterType='int' resultMap='ProductoResult'>
+        SELECT
+        producto.id,
+        producto.nombre ,
+        precio,
+        cantidad,
+        proveedor_id,
+        proveedor.nombre proveedor_name
+        FROM producto  left outer JOIN  proveedor On proveedor.id = producto.proveedor_id
+        WHERE producto.proveedor_id = #{proveedor_id}
+    </select>
+
+    <select id='getAllProductos' fetchSize="2" resultMap='ProductoResult'>
         SELECT * FROM producto left outer JOIN  proveedor On proveedor.id = producto.proveedor_id
     </select>
     <insert id='insertProducto' parameterType='Producto' useGeneratedKeys='true' keyProperty='id'>

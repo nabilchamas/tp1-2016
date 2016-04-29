@@ -14,4 +14,5 @@ public interface ProductoMapper {
     List<ProductoEntity> getAllProductos();
     void updateProducto(ProductoEntity producto);
     void deleteProducto(Integer productoId);
+    List <ProductoEntity> getAllProductosByProveedorId(int proveedorId);
 }
