@@ -30,11 +30,11 @@
     </select>
 
     <select id='getAllProductos' resultMap='ProductoResult'>
-        SELECT * FROM producto
+        SELECT * FROM producto left outer JOIN  proveedor On proveedor.id = producto.proveedor_id
     </select>
     <insert id='insertProducto' parameterType='Producto' useGeneratedKeys='true' keyProperty='id'>
         INSERT INTO PRODUCTO (nombre, precio, cantidad, proveedor_id)
-        VALUES(#{nombre}, #{precio}, #{cantidad}, #{proveedor_id})
+        VALUES(#{nombre}, #{precio}, #{cantidad}, #{proveedor.id})
     </insert>
     <update id='updateProducto' parameterType='Producto'>
         UPDATE producto
@@ -42,7 +42,7 @@
         NOMBRE= #{nombre},
        PRECIO = #{precio},
        cantidad = #{cantidad},
-       PROVEEDOR_ID = #{proveedor_id}
+       PROVEEDOR_ID = #{proveedor.id}
 
 
         WHERE ID = #{id}

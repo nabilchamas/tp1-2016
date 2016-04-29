@@ -5,13 +5,16 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
 
+import javax.ejb.Singleton;
+import javax.ejb.Startup;
 import java.io.IOException;
 import java.io.Reader;
 
 /**
  * Created by sortiz on 4/27/16.
  */
-
+@Singleton
+@Startup
 public class MybatisUtils {
 
 
