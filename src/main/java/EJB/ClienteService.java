@@ -66,7 +66,12 @@ public class ClienteService {
         SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
         SqlSession sqlSession = factory.openSession();
         ClienteMapper clienteMapper = sqlSession.getMapper(ClienteMapper.class);
-        return clienteMapper.getClienteById(id);
+       ClienteEntity cliente = clienteMapper.getClienteById(id);
+        if(cliente != null){
+            return cliente;
+        }else{
+            return "No existe el cliente con el id: "+ id.toString();
+        }
     }
 
 

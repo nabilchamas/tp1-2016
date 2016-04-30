@@ -52,7 +52,7 @@ public class Producto {
     public Response getProductos(){
         productoService.crearFileProductos();
 
-        File file = new File("/home/nabil/Desktop/productos");
+        File file = new File("/home/sortiz/Desktop/productos");
         return Response.status(200).entity(file).build();
 //        Response.ResponseBuilder response = Response.ok((Object) file);
 //        //response.header("Content-Disposition", "attachment; filename=\"productos\"");
@@ -142,7 +142,7 @@ public class Producto {
     public Response appendFile(){
         productoService.crearFileProductos();
 
-        File file = new File("/home/nabil/Desktop/productos");
+        File file = new File("/home/sortiz/Desktop/productos");
         Response.ResponseBuilder response = Response.ok(file);
         response.header("Content-Disposition", "attachment; filename=\"productos\"");
         return response.build();

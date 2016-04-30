@@ -7,6 +7,7 @@ import JPA.ProveedorEntity;
 import Mappers.MybatisUtils;
 import Mappers.ProductoMapper;
 import Mappers.ProveedorMapper;
+import REST.Producto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -94,16 +95,17 @@ public class ProductoService {
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public Object getProducto(Integer id){
-        try{
+
             SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
             SqlSession sqlSession = factory.openSession();
             ProductoMapper productoMapper = sqlSession.getMapper(ProductoMapper.class);
+            ProductoEntity producto = productoMapper.getProductoById(id);
+            if(producto != null){
+                return producto;
+            }else{
+                return "No existe el producto con el id: " + id.toString();
+            }
 
-            return productoMapper.getProductoById(id);
-        }catch (Exception e){
-            e.printStackTrace();
-            return "No se encuentro o no existe el producto.";
-        }
     }
 
 
@@ -161,7 +163,7 @@ public class ProductoService {
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void crearFileProductos(){
         try{
-            File file =new File("/home/nabil/Desktop/productos");
+            File file =new File("/home/sortiz/Desktop/productos");
             if(!file.exists()){
                 file.createNewFile();
             }else {
@@ -180,17 +182,14 @@ public class ProductoService {
             ObjectMapper mapper = new ObjectMapper();
             String jsonString;
             pw.println("[");
-            while((productos = getPorcionProductos(offset, 20)).size() > 0) {
-
-                for (Object producto : productos) {
+            productos = getPorcionProductos();
+            for (Object producto : productos) {
                     jsonString = mapper.writeValueAsString(producto);
                     if(!empieza) pw.print(",");
                     pw.println(jsonString);
                     empieza=false;
                 }
 
-                offset += productos.size();
-            }
             pw.println("]");
 
             pw.close();
@@ -207,7 +206,7 @@ public class ProductoService {
 
     }
 
-    private List getPorcionProductos(int offset, int max){
+    private List getPorcionProductos(){
         SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
         SqlSession sqlSession = factory.openSession();
         ProductoMapper productoMapper = sqlSession.getMapper(ProductoMapper.class);

@@ -52,7 +52,7 @@
         WHERE producto.proveedor_id = #{proveedor_id}
     </select>
 
-    <select id='getAllProductos' fetchSize="2" useCache="false" resultMap='ProductoResult'>
+    <select id='getAllProductos' fetchSize="100" resultSetType="FORWARD_ONLY" useCache="false" resultMap='ProductoResult'>
         SELECT * FROM producto left outer JOIN  proveedor On proveedor.id = producto.proveedor_id
     </select>
     <insert id='insertProducto' parameterType='Producto' useGeneratedKeys='true' keyProperty='id'>
