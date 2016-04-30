@@ -17,14 +17,24 @@
     <select id='getProductoDuplicadoById' parameterType='integer' resultMap='ProductoDuplicadoResult'>
         SELECT
         producto_duplicado.id,
-        producto_duplicado.nombre ,
-        precio,
-        cantidad,
+        producto_duplicado.cantidad,
         cod_producto,
         producto.nombre producto_name
         FROM productoDuplicado  left outer JOIN  producto On producto.id = productoDuplicado.cod_producto
         WHERE productoDuplicado.id = #{id}
     </select>
+
+    <select id='getProductoByCodProducto' parameterType='integer' resultMap='ProductoDuplicadoResult'>
+        SELECT
+        producto_duplicado.id,
+        producto_duplicado.cantidad,
+        cod_producto,
+        producto.nombre producto_name
+        FROM productoDuplicado  left outer JOIN  producto On producto.id = productoDuplicado.cod_producto
+        WHERE productoDuplicado.cod_producto = #{cod_producto}
+    </select>
+
+
 
 
 

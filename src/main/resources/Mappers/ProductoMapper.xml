@@ -28,6 +28,18 @@
         WHERE producto.id = #{id}
     </select>
 
+    <select id='getProductoByNombre' parameterType='String' resultMap='ProductoResult'>
+        SELECT
+        producto.id,
+        producto.nombre ,
+        precio,
+        cantidad,
+        proveedor_id,
+        proveedor.nombre proveedor_name
+        FROM producto  left outer JOIN  proveedor On proveedor.id = producto.proveedor_id
+        WHERE producto.nombre = #{nombre}
+    </select>
+
     <select id='getAllProductosByProveedorId' parameterType='int' resultMap='ProductoResult'>
         SELECT
         producto.id,

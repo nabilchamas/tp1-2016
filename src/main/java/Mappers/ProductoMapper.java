@@ -11,6 +11,7 @@ public interface ProductoMapper {
 
     void insertProducto(ProductoEntity producto);
     ProductoEntity getProductoById(Integer productoId);
+    ProductoEntity getProductoByNombre(String productoNombre);
     List<ProductoEntity> getAllProductos();
     void updateProducto(ProductoEntity producto);
     void deleteProducto(Integer productoId);

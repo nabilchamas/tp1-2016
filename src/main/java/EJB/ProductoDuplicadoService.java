@@ -3,6 +3,11 @@ package EJB;
 import JPA.ProductoDuplicadoEntity;
 import JPA.ProductoEntity;
 import JPA.ProveedorEntity;
+import Mappers.MybatisUtils;
+import Mappers.ProductoDuplicadoMapper;
+import Mappers.ProductoMapper;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -19,33 +24,38 @@ import javax.persistence.Query;
 @Stateless
 public class ProductoDuplicadoService {
 
-    @PersistenceContext(unitName = "NewPersistenceUnit")
-    private EntityManager em;
+
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public Object crearProductoDuplicado(String nombre){
-        Query firstQuery = em.createNamedQuery("producto.findByNombre");
-        firstQuery.setParameter("nombre", nombre);
-        ProductoEntity producto = (ProductoEntity)firstQuery.getSingleResult();
+        SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
+        SqlSession sqlSession = factory.openSession();
+        ProductoMapper productoMapper = sqlSession.getMapper(ProductoMapper.class);
+        ProductoEntity producto = productoMapper.getProductoByNombre(nombre);
+        ProductoDuplicadoMapper productoDuplicadoMapper = sqlSession.getMapper(ProductoDuplicadoMapper.class);
+
 
         try{
-            Query query = em.createNamedQuery("productoDuplicado.findByProducto");
-            query.setParameter("producto", producto);
-            ProductoDuplicadoEntity duplicado = (ProductoDuplicadoEntity)query.getSingleResult();
+
+
+            ProductoDuplicadoEntity duplicado = productoDuplicadoMapper.getProductoByCodProducto((int)producto.getId());
             long cantidad = duplicado.getCantidad().longValue();
             cantidad++;
             duplicado.setCantidad(cantidad);
-            em.persist(duplicado);
+            productoDuplicadoMapper.updateProductoDuplicado(duplicado);
             return duplicado;
         }catch (NoResultException e){
             ProductoDuplicadoEntity duplicado = new ProductoDuplicadoEntity();
             duplicado.setProducto(producto);
             duplicado.setCantidad(Long.parseLong("1"));
-            em.persist(duplicado);
+           productoDuplicadoMapper.insertProductoDuplicado(duplicado);
             return duplicado;
         }catch (Exception e){
             e.printStackTrace();
             return "No se pudo crear el producto en ProductoDuplicado EJB";
         }
     }
+
+
+
 }

@@ -20,7 +20,7 @@
     </resultMap>
     <resultMap id="CompraResult" type="Compra">
         <id property="id" column="compra_id"/>
-        <result property="proveedor" column="proveedor_id"/>
+
     </resultMap>
     <select id='getDetalleCompraById' parameterType='integer' resultMap='DetalleCompraResult'>
         SELECT

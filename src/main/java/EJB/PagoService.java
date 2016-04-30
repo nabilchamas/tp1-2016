@@ -2,6 +2,11 @@ package EJB;
 
 import JPA.ClienteEntity;
 import JPA.PagoEntity;
+import Mappers.ClienteMapper;
+import Mappers.MybatisUtils;
+import Mappers.PagoMapper;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -18,14 +23,16 @@ import java.util.List;
 @Stateless
 public class PagoService {
 
-    @PersistenceContext(name = "NewPersistenceUnit")
-    private EntityManager em;
+
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public Object crearPago(Integer clienteId, String monto, String fecha){
         try{
             PagoEntity pago = new PagoEntity();
-            ClienteEntity cliente = em.find(ClienteEntity.class, clienteId.longValue());
+            SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
+            SqlSession sqlSession = factory.openSession();
+            ClienteMapper clienteMapper = sqlSession.getMapper(ClienteMapper.class);
+            ClienteEntity cliente = clienteMapper.getClienteById(clienteId);
             pago.setCliente(cliente);
             pago.setMonto(monto);
             pago.setFecha(fecha);
@@ -34,8 +41,9 @@ public class PagoService {
             nuevoSaldo -= Integer.parseInt(monto);
             cliente.setSaldo(nuevoSaldo.toString());
 
-            em.persist(pago);
-            em.persist(cliente);
+           PagoMapper pagoMapper = sqlSession.getMapper(PagoMapper.class);
+            pagoMapper.insertPago(pago);
+            clienteMapper.updateCliente(cliente);
             return pago;
         }catch (Exception e){
             e.printStackTrace();
@@ -45,13 +53,15 @@ public class PagoService {
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public List getPagos(){
-        return em.createNamedQuery("pago.findAll").getResultList();
+        PagoMapper pagoMapper = iniciarPagoMapper();
+        return pagoMapper.getAllPagos();
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public Object getPago(Integer pagoId){
         try{
-            return em.find(PagoEntity.class, pagoId.longValue());
+            PagoMapper pagoMapper = iniciarPagoMapper();
+            return pagoMapper.getPagoById(pagoId);
         }catch (Exception e){
             e.printStackTrace();
             return "No se encuentra o no existe el pago.";
@@ -62,12 +72,18 @@ public class PagoService {
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public Object deletePago(Integer id){
         try{
-            PagoEntity pago = em.find(PagoEntity.class, id.longValue());
-            em.remove(pago);
+            PagoMapper pagoMapper = iniciarPagoMapper();
+            pagoMapper.deletePago(id);
             return "Pago eliminado.";
         }catch (Exception e){
             e.printStackTrace();
             return "No se pudo eliminar o no existe el pago.";
         }
+    }
+
+    private PagoMapper iniciarPagoMapper(){
+        SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
+        SqlSession sqlSession = factory.openSession();
+        return sqlSession.getMapper(PagoMapper.class);
     }
 }
