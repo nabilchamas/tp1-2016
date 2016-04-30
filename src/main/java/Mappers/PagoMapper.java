@@ -12,6 +12,5 @@ public interface PagoMapper {
     void insertPago(PagoEntity pago);
     PagoEntity getPagoById(Integer pagoId);
     List<PagoEntity> getAllPagos();
-    void updatePago(PagoEntity pago);
     void deletePago(Integer pagoId);
 }

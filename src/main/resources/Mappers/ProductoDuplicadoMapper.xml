@@ -39,7 +39,12 @@
 
 
     <select id='getAllProductoDuplicados'  resultMap='ProductoDuplicadoResult'>
-        SELECT * FROM producto_duplicado left outer JOIN  producto On producto.id = productoDuplicado.cod_producto
+        SELECT
+        producto_duplicado.id,
+        producto_duplicado.cantidad,
+        cod_producto,
+        producto.nombre producto_name
+        FROM producto_duplicado left outer JOIN  producto On producto.id = productoDuplicado.cod_producto
     </select>
     <insert id='insertProductoDuplicado' parameterType='ProductoDuplicado' useGeneratedKeys='true' keyProperty='id'>
         INSERT INTO producto_duplicado ( cantidad, cod_producto)

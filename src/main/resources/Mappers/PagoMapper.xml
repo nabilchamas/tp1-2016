@@ -14,6 +14,7 @@
     <resultMap id="ClienteResult" type="Cliente">
         <id property="id" column="cliente_id"/>
         <result property='nombre' column='cliente_name'/>
+        <result property='saldo' column='cliente_saldo'/>
     </resultMap>
 
     <select id='getPagoById' parameterType='integer' resultMap='PagoResult'>
@@ -22,25 +23,26 @@
         monto,
         fecha,
         cliente_id,
-        cliente.nombre cliente_name
+        cliente.nombre cliente_name,
+        cliente.saldo cliente_saldo
         FROM pago  left outer JOIN  cliente On cliente.id = pago.cliente_id
         WHERE pago.id = #{id}
     </select>
     <select id='getAllPagos'   resultMap='PagoResult'>
-        SELECT * FROM pago  left outer JOIN  cliente On cliente.id = pago.cliente_id
+        SELECT
+          pago.id,
+        monto,
+        fecha,
+        cliente_id,
+        cliente.nombre cliente_name,
+        cliente.saldo cliente_saldo
+        FROM pago  left outer JOIN  cliente On cliente.id = pago.cliente_id
     </select>
     <insert id='insertPago' parameterType='Pago' useGeneratedKeys='true' keyProperty='id'>
-        INSERT INTO detalle_pago (monto, fecha, cliente_id)
-        VALUES(#{monto},#{fecha},#{cliente_id})
+        INSERT INTO pago (monto, fecha, cliente_id)
+        VALUES(#{monto},#{fecha},#{cliente.id})
     </insert>
-    <update id='updatePago' parameterType='Pago'>
-        UPDATE pago
-        SET
-        cliente_id = #{cliente.id},
-        monto = #{monto},
-        fecha = #{fecha}
-        WHERE ID = #{id}
-    </update>
+
     <delete id='deletePago' parameterType='integer'>
         DELETE FROM pago WHERE id = #{id}
     </delete>

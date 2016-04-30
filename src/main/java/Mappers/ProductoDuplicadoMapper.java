@@ -14,7 +14,7 @@ public interface ProductoDuplicadoMapper {
     ProductoDuplicadoEntity getProductoByCodProducto(Integer productoDuplicadoId);
     List<ProductoDuplicadoEntity> getAllProductoDuplicados();
     void updateProductoDuplicado(ProductoDuplicadoEntity productoDuplicado);
-    void deleteProductoDuplicado(Integer productoDuplicadoId);
+
 
 
 }
