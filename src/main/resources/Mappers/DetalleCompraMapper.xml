@@ -70,7 +70,7 @@
     </select>
     <insert id='insertDetalleCompra' parameterType='DetalleCompra' useGeneratedKeys='true' keyProperty='id'>
         INSERT INTO detalle_compra (cantidad, compra_id, producto_id)
-        VALUES(#{cantidad}, #{compra_id}, #{producto_id})
+        VALUES(#{cantidad}, #{compra.id}, #{producto.id})
     </insert>
     <update id='updateDetalleCompra' parameterType='DetalleCompra'>
         UPDATE detalle_compra
@@ -81,6 +81,6 @@
        WHERE ID = #{id}
     </update>
     <delete id='deleteDetalleCompra' parameterType='integer'>
-        DELETE FROM detalle_compra WHERE id = #{id}
+        DELETE FROM detalle_compra WHERE compra_id = #{compra.id}
     </delete>
 </mapper>

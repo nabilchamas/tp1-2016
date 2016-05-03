@@ -49,7 +49,7 @@ public class CompraService {
             ProveedorEntity proveedor = proveedorMapper.getProveedorById(proveedorId);
             compra.setProveedor(proveedor);
             compraMapper.insertCompra(compra);
-            sqlSession.flushStatements();
+
             List<DetalleCompraEntity> detalles = new ArrayList<DetalleCompraEntity>();
             for(int i=0; i<productosId.size(); i++){
                 Integer productoId = productosId.get(i);
@@ -66,8 +66,7 @@ public class CompraService {
             }
 
             compra.setDetalles(detalles);
-            compraMapper.updateCompra(compra);
-            return compra;
+            return "Se realizo la compra";
         }catch (Exception e){
             e.printStackTrace();
             return "No se pudo crear la compra.";
@@ -87,6 +86,7 @@ public class CompraService {
         //DetalleCompraMapper detalleCompraMapper = sqlSession.getMapper(DetalleCompraMapper.class);
 
         List<CompraEntity> compraEntities = compraMapper.getAllCompras();
+
         sqlSession.close();
         return compraEntities;
     }
@@ -99,9 +99,10 @@ public class CompraService {
         //ProveedorMapper proveedorMapper = sqlSession.getMapper(ProveedorMapper.class);
         CompraMapper compraMapper = sqlSession.getMapper(CompraMapper.class);
         //ProductoMapper productoMapper = sqlSession.getMapper(ProductoMapper.class);
-        //DetalleCompraMapper detalleCompraMapper = sqlSession.getMapper(DetalleCompraMapper.class);
+        DetalleCompraMapper detalleCompraMapper = sqlSession.getMapper(DetalleCompraMapper.class);
         try{
             CompraEntity compraEntity = compraMapper.getCompraById(id);
+            compraEntity.setDetalles(detalleCompraMapper.getAllDetallesComprasByCompraId(id));
             return compraEntity;
         }catch (Exception e){
             e.printStackTrace();
@@ -119,6 +120,8 @@ public class CompraService {
         try {
 
             CompraMapper compraMapper = sqlSession.getMapper(CompraMapper.class);
+            DetalleCompraMapper detalleCompraMapper = sqlSession.getMapper(DetalleCompraMapper.class);
+            detalleCompraMapper.deleteDetalleCompra(id);
             compraMapper.deleteCompra(id);
             return "Compra eliminada.";
         }catch (Exception e){

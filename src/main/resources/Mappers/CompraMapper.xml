@@ -26,8 +26,8 @@
         SELECT * FROM compra  left outer JOIN  proveedor On proveedor.id = compra.proveedor_id
     </select>
     <insert id='insertCompra' parameterType='Compra' useGeneratedKeys='true' keyProperty='id'>
-        INSERT INTO detalle_compra ( proveedor_id)
-        VALUES(#{proveedor_id})
+        INSERT INTO compra ( proveedor_id)
+        VALUES(#{proveedor.id})
     </insert>
     <update id='updateCompra' parameterType='Compra'>
         UPDATE compra
