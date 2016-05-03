@@ -12,6 +12,7 @@
     <resultMap id="ClienteResult" type="Cliente">
         <id property="id" column="cliente_id"/>
         <result property='nombre' column='cliente_name'/>
+        <result property='saldo' column='cliente_saldo'/>
     </resultMap>
 
     <select id='getVentaById' parameterType='integer' resultMap='VentaResult'>
@@ -19,6 +20,7 @@
         venta.id,
         cliente_id,
         cliente.nombre cliente_name
+        cliente.saldo cliente_saldo
         FROM venta  left outer JOIN  cliente On cliente.id = venta.cliente_id
         WHERE venta.id = #{id}
     </select>
@@ -26,8 +28,8 @@
         SELECT * FROM venta  left outer JOIN  cliente On cliente.id = venta.cliente_id
     </select>
     <insert id='insertVenta' parameterType='Venta' useGeneratedKeys='true' keyProperty='id'>
-        INSERT INTO detalle_venta ( cliente_id)
-        VALUES(#{cliente_id})
+        INSERT INTO venta ( cliente_id)
+        VALUES(#{cliente.id})
     </insert>
     <update id='updateVenta' parameterType='Venta'>
         UPDATE venta

@@ -29,8 +29,7 @@ import java.util.List;
 @Stateless
 public class VentaService {
 
-    @PersistenceContext(name = "NewPersistenceUnit")
-    EntityManager em;
+
 
 
     @POST
@@ -79,7 +78,7 @@ public class VentaService {
             venta.setDetalles(detalles);
             ventaMapper.updateVenta(venta);
             clienteMapper.updateCliente(cliente);
-            return venta;
+            return "Venta realizada exitosamente";
         }catch (Exception e){
             e.printStackTrace();
             return "No se pudo crear la venta.";
@@ -94,11 +93,7 @@ public class VentaService {
     public List getVentas(){
         SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
         SqlSession sqlSession = factory.openSession();
-
-        //ClienteMapper clienteMapper = sqlSession.getMapper(ClienteMapper.class);
         VentaMapper ventaMapper = sqlSession.getMapper(VentaMapper.class);
-        //ProductoMapper productoMapper = sqlSession.getMapper(ProductoMapper.class);
-        //DetalleVentaMapper detalleventaMapper = sqlSession.getMapper(DetalleVentaMapper.class);
         List<VentaEntity> ventas = ventaMapper.getAllVentas();
         sqlSession.close();
         return ventas;
@@ -110,13 +105,11 @@ public class VentaService {
     public Object getVenta(Integer id){
         SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
         SqlSession sqlSession = factory.openSession();
-
-        //ClienteMapper clienteMapper = sqlSession.getMapper(ClienteMapper.class);
         VentaMapper ventaMapper = sqlSession.getMapper(VentaMapper.class);
-        //ProductoMapper productoMapper = sqlSession.getMapper(ProductoMapper.class);
-        //DetalleVentaMapper detalleventaMapper = sqlSession.getMapper(DetalleVentaMapper.class);
+        DetalleVentaMapper detalleventaMapper = sqlSession.getMapper(DetalleVentaMapper.class);
         try {
             VentaEntity venta = ventaMapper.getVentaById(id);
+            venta.setDetalles(detalleventaMapper.getAllDetallesVentasByVentaId(id));
             return venta;
         }catch (Exception e){
             e.printStackTrace();
@@ -133,8 +126,9 @@ public class VentaService {
         SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
         SqlSession sqlSession = factory.openSession();
         try{
-
+            DetalleVentaMapper detalleVentaMapper = sqlSession.getMapper(DetalleVentaMapper.class);
             VentaMapper ventaMapper = sqlSession.getMapper(VentaMapper.class);
+            detalleVentaMapper.deleteDetalleVenta(id);
             ventaMapper.deleteVenta(id);
             return "Venta eliminada.";
         }catch (Exception e){

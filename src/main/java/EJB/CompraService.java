@@ -80,10 +80,7 @@ public class CompraService {
     public List getCompras(){
         SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
         SqlSession sqlSession = factory.openSession();
-        //ProveedorMapper proveedorMapper = sqlSession.getMapper(ProveedorMapper.class);
         CompraMapper compraMapper = sqlSession.getMapper(CompraMapper.class);
-        //ProductoMapper productoMapper = sqlSession.getMapper(ProductoMapper.class);
-        //DetalleCompraMapper detalleCompraMapper = sqlSession.getMapper(DetalleCompraMapper.class);
 
         List<CompraEntity> compraEntities = compraMapper.getAllCompras();
 
@@ -96,9 +93,7 @@ public class CompraService {
     public Object getCompra(Integer id){
         SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
         SqlSession sqlSession = factory.openSession();
-        //ProveedorMapper proveedorMapper = sqlSession.getMapper(ProveedorMapper.class);
         CompraMapper compraMapper = sqlSession.getMapper(CompraMapper.class);
-        //ProductoMapper productoMapper = sqlSession.getMapper(ProductoMapper.class);
         DetalleCompraMapper detalleCompraMapper = sqlSession.getMapper(DetalleCompraMapper.class);
         try{
             CompraEntity compraEntity = compraMapper.getCompraById(id);
