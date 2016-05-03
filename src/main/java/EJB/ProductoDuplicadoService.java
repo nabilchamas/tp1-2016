@@ -53,6 +53,8 @@ public class ProductoDuplicadoService {
         }catch (Exception e){
             e.printStackTrace();
             return "No se pudo crear el producto en ProductoDuplicado EJB";
+        }finally {
+            sqlSession.close();
         }
     }
 

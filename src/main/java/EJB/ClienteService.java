@@ -46,6 +46,7 @@ public class ClienteService {
         SqlSession sqlSession = factory.openSession();
         ClienteMapper clienteMapper = sqlSession.getMapper(ClienteMapper.class);
         clienteMapper.insertCliente(cliente);
+        sqlSession.close();
         return cliente;
     }
 
@@ -54,7 +55,9 @@ public class ClienteService {
        SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
         SqlSession sqlSession = factory.openSession();
         ClienteMapper clienteMapper = sqlSession.getMapper(ClienteMapper.class);
-            return clienteMapper.getAllClientes();
+        List<ClienteEntity> clientes = clienteMapper.getAllClientes();
+        sqlSession.close();
+            return clientes;
 
 
 
@@ -67,6 +70,7 @@ public class ClienteService {
         SqlSession sqlSession = factory.openSession();
         ClienteMapper clienteMapper = sqlSession.getMapper(ClienteMapper.class);
        ClienteEntity cliente = clienteMapper.getClienteById(id);
+        sqlSession.close();
         if(cliente != null){
             return cliente;
         }else{
@@ -81,6 +85,7 @@ public class ClienteService {
         SqlSession sqlSession = factory.openSession();
         ClienteMapper clienteMapper = sqlSession.getMapper(ClienteMapper.class);
         clienteMapper.deleteCliente(id);
+        sqlSession.close();
         return "Cliente eliminado";
     }
 
@@ -93,7 +98,7 @@ public class ClienteService {
             ClienteEntity cliente = clienteMapper.getClienteById(id);
             cliente.setNombre(nombre);
             clienteMapper.updateCliente(cliente);
-
+            sqlSession.close();
             return "Cliente actualizado.";
 
     }

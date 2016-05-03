@@ -27,11 +27,12 @@ public class PagoService {
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public Object crearPago(Integer clienteId, String monto, String fecha){
+        SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
+        SqlSession sqlSession = factory.openSession();
+
         try{
             PagoEntity pago = new PagoEntity();
-            SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
-            SqlSession sqlSession = factory.openSession();
-            ClienteMapper clienteMapper = sqlSession.getMapper(ClienteMapper.class);
+           ClienteMapper clienteMapper = sqlSession.getMapper(ClienteMapper.class);
             ClienteEntity cliente = clienteMapper.getClienteById(clienteId);
             pago.setCliente(cliente);
             pago.setMonto(monto);
@@ -48,6 +49,8 @@ public class PagoService {
         }catch (Exception e){
             e.printStackTrace();
             return "No se pudo crear el pago.";
+        }finally {
+            sqlSession.close();
         }
     }
 

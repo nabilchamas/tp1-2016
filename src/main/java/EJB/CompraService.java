@@ -4,6 +4,10 @@ import JPA.CompraEntity;
 import JPA.DetalleCompraEntity;
 import JPA.ProductoEntity;
 import JPA.ProveedorEntity;
+import Mappers.*;
+import org.apache.ibatis.jdbc.SQL;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -22,74 +26,106 @@ import java.util.List;
 @Stateless
 public class CompraService {
 
-    @PersistenceContext(name = "NewPersistenceUnit")
-    private EntityManager em;
+
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public Object crearCompra(Integer proveedorId, List<Integer> productosId,
                               List<Integer> cantidades){
+        SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
+        SqlSession sqlSession = factory.openSession();
+
+        ProveedorMapper proveedorMapper = sqlSession.getMapper(ProveedorMapper.class);
+        CompraMapper compraMapper = sqlSession.getMapper(CompraMapper.class);
+        ProductoMapper productoMapper = sqlSession.getMapper(ProductoMapper.class);
+        DetalleCompraMapper detalleCompraMapper = sqlSession.getMapper(DetalleCompraMapper.class);
+
         if(productosId.size()!=cantidades.size()){
             return "Se necesita igual numero de parametros de productosId y cantidades.";
         }
 
         try {
-            CompraEntity compra = new CompraEntity();
-            ProveedorEntity proveedor = em.find(ProveedorEntity.class, proveedorId.longValue());
-            compra.setProveedor(proveedor);
-            em.persist(compra);
-            em.flush();
 
+            CompraEntity compra = new CompraEntity();
+            ProveedorEntity proveedor = proveedorMapper.getProveedorById(proveedorId);
+            compra.setProveedor(proveedor);
+            compraMapper.insertCompra(compra);
+            sqlSession.flushStatements();
             List<DetalleCompraEntity> detalles = new ArrayList<DetalleCompraEntity>();
             for(int i=0; i<productosId.size(); i++){
                 Integer productoId = productosId.get(i);
                 Integer cantidad = cantidades.get(i);
-                ProductoEntity producto = em.find(ProductoEntity.class, productoId.longValue());
+                ProductoEntity producto = productoMapper.getProductoById(productoId);
                 DetalleCompraEntity detalle = new DetalleCompraEntity();
                 detalle.setProducto(producto);
                 detalle.setCantidad(cantidad.toString());
                 detalle.setCompra(compra);
 
                 detalles.add(detalle);
-                em.persist(detalle);
+                detalleCompraMapper.insertDetalleCompra(detalle);
+
             }
 
             compra.setDetalles(detalles);
-            em.persist(compra);
+            compraMapper.updateCompra(compra);
             return compra;
         }catch (Exception e){
             e.printStackTrace();
             return "No se pudo crear la compra.";
+        }finally {
+            sqlSession.close();
         }
     }
 
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public List getCompras(){
-        Query query = em.createNamedQuery("compra.findAll");
-        return query.getResultList();
+        SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
+        SqlSession sqlSession = factory.openSession();
+        //ProveedorMapper proveedorMapper = sqlSession.getMapper(ProveedorMapper.class);
+        CompraMapper compraMapper = sqlSession.getMapper(CompraMapper.class);
+        //ProductoMapper productoMapper = sqlSession.getMapper(ProductoMapper.class);
+        //DetalleCompraMapper detalleCompraMapper = sqlSession.getMapper(DetalleCompraMapper.class);
+
+        List<CompraEntity> compraEntities = compraMapper.getAllCompras();
+        sqlSession.close();
+        return compraEntities;
     }
 
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public Object getCompra(Integer id){
+        SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
+        SqlSession sqlSession = factory.openSession();
+        //ProveedorMapper proveedorMapper = sqlSession.getMapper(ProveedorMapper.class);
+        CompraMapper compraMapper = sqlSession.getMapper(CompraMapper.class);
+        //ProductoMapper productoMapper = sqlSession.getMapper(ProductoMapper.class);
+        //DetalleCompraMapper detalleCompraMapper = sqlSession.getMapper(DetalleCompraMapper.class);
         try{
-            return em.find(ProveedorEntity.class, id.longValue());
+            CompraEntity compraEntity = compraMapper.getCompraById(id);
+            return compraEntity;
         }catch (Exception e){
             e.printStackTrace();
             return "No se encuentra o no existe la compra.";
+        }finally {
+            sqlSession.close();
         }
     }
 
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public Object deleteCompra(Integer id){
+        SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
+        SqlSession sqlSession = factory.openSession();
         try {
-            CompraEntity compra = em.find(CompraEntity.class, id.longValue());
-            em.remove(compra);
+
+            CompraMapper compraMapper = sqlSession.getMapper(CompraMapper.class);
+            compraMapper.deleteCompra(id);
             return "Compra eliminada.";
         }catch (Exception e){
             e.printStackTrace();
             return "No existe o no se pudo eliminar la compra.";
+        }finally {
+            sqlSession.close();
         }
     }
 

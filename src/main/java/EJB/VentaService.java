@@ -6,6 +6,9 @@ import JPA.ClienteEntity;
 import JPA.DetalleVentaEntity;
 import JPA.ProductoEntity;
 import JPA.VentaEntity;
+import Mappers.*;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -34,16 +37,24 @@ public class VentaService {
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public Object crearVenta(Integer clienteId, List<Integer> productosId,
                              List<Integer> cantidades){
+
+        SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
+        SqlSession sqlSession = factory.openSession();
+
+        ClienteMapper clienteMapper = sqlSession.getMapper(ClienteMapper.class);
+        VentaMapper ventaMapper = sqlSession.getMapper(VentaMapper.class);
+        ProductoMapper productoMapper = sqlSession.getMapper(ProductoMapper.class);
+        DetalleVentaMapper detalleventaMapper = sqlSession.getMapper(DetalleVentaMapper.class);
         if(productosId.size()!=cantidades.size()){
             return "Se necesita igual numero de parametros de productosId y cantidades.";
         }
 
         try{
             VentaEntity venta = new VentaEntity();
-            ClienteEntity cliente = em.find(ClienteEntity.class, clienteId.longValue());
+            ClienteEntity cliente = clienteMapper.getClienteById(clienteId);
             venta.setCliente(cliente);
-            em.persist(venta);
-            em.flush();
+            ventaMapper.insertVenta(venta);
+            //em.flush();
 
             Integer nuevoSaldo=Integer.parseInt(cliente.getSaldo());
             List<DetalleVentaEntity> detalles = new ArrayList<DetalleVentaEntity>();
@@ -52,7 +63,7 @@ public class VentaService {
                 Integer cantidad = cantidades.get(i);
                 DetalleVentaEntity detalleVentaEntity = new DetalleVentaEntity();
 
-                ProductoEntity producto = em.find(ProductoEntity.class, productoId.longValue());
+                ProductoEntity producto = productoMapper.getProductoById(productoId);
                 detalleVentaEntity.setProducto(producto);
                 detalleVentaEntity.setCantidad(cantidad);
                 detalleVentaEntity.setVenta(venta);
@@ -61,17 +72,19 @@ public class VentaService {
                 nuevoSaldo += Integer.parseInt(producto.getPrecio())*cantidad;
 
                 detalles.add(detalleVentaEntity);
-                em.persist(detalleVentaEntity);
+                detalleventaMapper.insertDetalleVenta(detalleVentaEntity);
             }
             cliente.setSaldo(nuevoSaldo.toString());
 
             venta.setDetalles(detalles);
-            em.persist(venta);
-            em.persist(cliente);
+            ventaMapper.updateVenta(venta);
+            clienteMapper.updateCliente(cliente);
             return venta;
         }catch (Exception e){
             e.printStackTrace();
             return "No se pudo crear la venta.";
+        }finally {
+            sqlSession.close();
         }
     }
 
@@ -79,19 +92,37 @@ public class VentaService {
     @GET
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public List getVentas(){
-        Query query = em.createNamedQuery("venta.findAll");
-        return query.getResultList();
+        SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
+        SqlSession sqlSession = factory.openSession();
+
+        //ClienteMapper clienteMapper = sqlSession.getMapper(ClienteMapper.class);
+        VentaMapper ventaMapper = sqlSession.getMapper(VentaMapper.class);
+        //ProductoMapper productoMapper = sqlSession.getMapper(ProductoMapper.class);
+        //DetalleVentaMapper detalleventaMapper = sqlSession.getMapper(DetalleVentaMapper.class);
+        List<VentaEntity> ventas = ventaMapper.getAllVentas();
+        sqlSession.close();
+        return ventas;
     }
 
 
     @GET
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public Object getVenta(Integer id){
+        SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
+        SqlSession sqlSession = factory.openSession();
+
+        //ClienteMapper clienteMapper = sqlSession.getMapper(ClienteMapper.class);
+        VentaMapper ventaMapper = sqlSession.getMapper(VentaMapper.class);
+        //ProductoMapper productoMapper = sqlSession.getMapper(ProductoMapper.class);
+        //DetalleVentaMapper detalleventaMapper = sqlSession.getMapper(DetalleVentaMapper.class);
         try {
-            return em.find(VentaEntity.class, id.longValue());
+            VentaEntity venta = ventaMapper.getVentaById(id);
+            return venta;
         }catch (Exception e){
             e.printStackTrace();
             return "No se encontro o no existe la venta.";
+        }finally {
+            sqlSession.close();
         }
     }
 
@@ -99,13 +130,18 @@ public class VentaService {
     @DELETE
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public Object deleteVenta(Integer id){
+        SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
+        SqlSession sqlSession = factory.openSession();
         try{
-            VentaEntity venta = em.find(VentaEntity.class, id.longValue());
-            em.remove(venta);
+
+            VentaMapper ventaMapper = sqlSession.getMapper(VentaMapper.class);
+            ventaMapper.deleteVenta(id);
             return "Venta eliminada.";
         }catch (Exception e){
             e.printStackTrace();
             return "No se pudo eliminar o no existe la venta.";
+        }finally {
+            sqlSession.close();
         }
     }
 

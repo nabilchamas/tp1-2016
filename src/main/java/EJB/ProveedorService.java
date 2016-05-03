@@ -35,6 +35,7 @@ public class ProveedorService {
             SqlSession sqlSession = factory.openSession();
             ProveedorMapper proveedorMapper = sqlSession.getMapper(ProveedorMapper.class);
             proveedorMapper.insertProveedor(proveedor);
+            sqlSession.close();
             return "Proveedor creado";
     }
 
@@ -49,6 +50,7 @@ public class ProveedorService {
         for(ProveedorEntity p : listadeProveedores){
             p.setProductos(productoMapper.getAllProductosByProveedorId((int)p.getId()));
         }
+        sqlSession.close();
         return listadeProveedores;
 
     }
@@ -61,6 +63,7 @@ public class ProveedorService {
         ProductoMapper productoMapper = sqlSession.getMapper(ProductoMapper.class);
         ProveedorEntity proveedorEntity = proveedorMapper.getProveedorById(id);
         proveedorEntity.setProductos(productoMapper.getAllProductosByProveedorId(id));
+        sqlSession.close();
         return proveedorEntity;
     }
 
@@ -70,6 +73,7 @@ public class ProveedorService {
         SqlSession sqlSession = factory.openSession();
         ProveedorMapper proveedorMapper = sqlSession.getMapper(ProveedorMapper.class);
         proveedorMapper.deleteProveedor(id);
+        sqlSession.close();
             return "Proveedor borrado.";
 
     }
@@ -86,6 +90,7 @@ public class ProveedorService {
             ProveedorEntity proveedor =  proveedorMapper.getProveedorById(id);
             proveedor.setNombre(nombre);
            proveedorMapper.updateProveedor(proveedor);
+        sqlSession.close();
             return "Proveedor actualizado.";
 
     }
