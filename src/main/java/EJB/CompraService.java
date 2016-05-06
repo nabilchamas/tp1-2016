@@ -5,6 +5,7 @@ import JPA.DetalleCompraEntity;
 import JPA.ProductoEntity;
 import JPA.ProveedorEntity;
 import Mappers.*;
+import REST.Producto;
 import org.apache.ibatis.jdbc.SQL;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -15,6 +16,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,8 +31,9 @@ public class CompraService {
 
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    @Transactional(value = Transactional.TxType.REQUIRES_NEW, rollbackOn = Exception.class)
     public Object crearCompra(Integer proveedorId, List<Integer> productosId,
-                              List<Integer> cantidades){
+                              List<Integer> cantidades) throws Exception{
         SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
         SqlSession sqlSession = factory.openSession();
 
@@ -53,12 +56,15 @@ public class CompraService {
             List<DetalleCompraEntity> detalles = new ArrayList<DetalleCompraEntity>();
             for(int i=0; i<productosId.size(); i++){
                 Integer productoId = productosId.get(i);
-                Integer cantidad = cantidades.get(i);
+                Integer cantidad = cantidades.get(i), cantidadTotal= 0;
                 ProductoEntity producto = productoMapper.getProductoById(productoId);
                 DetalleCompraEntity detalle = new DetalleCompraEntity();
                 detalle.setProducto(producto);
                 detalle.setCantidad(cantidad.toString());
                 detalle.setCompra(compra);
+                cantidadTotal = Integer.parseInt(producto.getCantidad()) + cantidad;
+                producto.setCantidad(cantidadTotal.toString());
+                productoMapper.updateProducto(producto);
 
                 detalles.add(detalle);
                 detalleCompraMapper.insertDetalleCompra(detalle);
@@ -66,10 +72,8 @@ public class CompraService {
             }
 
             compra.setDetalles(detalles);
+            compraMapper.updateCompra(compra);
             return "Se realizo la compra";
-        }catch (Exception e){
-            e.printStackTrace();
-            return "No se pudo crear la compra.";
         }finally {
             sqlSession.close();
         }
@@ -113,9 +117,17 @@ public class CompraService {
         SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
         SqlSession sqlSession = factory.openSession();
         try {
-
+            ProductoMapper productoMapper = sqlSession.getMapper(ProductoMapper.class);
+            ProductoEntity productoEntity = null;
             CompraMapper compraMapper = sqlSession.getMapper(CompraMapper.class);
             DetalleCompraMapper detalleCompraMapper = sqlSession.getMapper(DetalleCompraMapper.class);
+            List<DetalleCompraEntity> detalles = detalleCompraMapper.getAllDetallesComprasByCompraId(id);
+            for(DetalleCompraEntity detalle : detalles){
+                productoEntity = productoMapper.getProductoById((int)detalle.getProducto().getId());
+                Integer cantidad = Integer.parseInt(productoEntity.getCantidad())-Integer.parseInt(detalle.getCantidad());
+                productoEntity.setCantidad(cantidad.toString());
+                productoMapper.updateProducto(productoEntity);
+            }
             detalleCompraMapper.deleteDetalleCompra(id);
             compraMapper.deleteCompra(id);
             return "Compra eliminada.";
