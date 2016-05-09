@@ -9,6 +9,7 @@ import Mappers.ProveedorMapper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.hibernate.exception.ConstraintViolationException;
@@ -81,7 +82,7 @@ public class ProductoService {
         SqlSession sqlSession = factory.openSession();
         ProductoMapper productoMapper = sqlSession.getMapper(ProductoMapper.class);
         sqlSession.close();
-        return productoMapper.getAllProductos();
+        return productoMapper.getAllProductosByProveedorId(1);
     }
 
 
@@ -176,19 +177,24 @@ public class ProductoService {
 
             //JSON
             boolean empieza=true;
-            int offset=0;
+            int offset=0, total = getTotalProductos();
+
+            RowBounds rowBounds = new RowBounds(offset,100);
             List productos;
             ObjectMapper mapper = new ObjectMapper();
             String jsonString;
             pw.println("[");
-            productos = getPorcionProductos();
-            for (Object producto : productos) {
+            while(rowBounds.getOffset() != total) {
+                productos = getPorcionProductos(rowBounds);
+                for (Object producto : productos) {
                     jsonString = mapper.writeValueAsString(producto);
                     if(!empieza) pw.print(",");
                     pw.println(jsonString);
                     empieza=false;
                 }
-
+                offset += productos.size();
+                rowBounds = new RowBounds(offset,100);
+            }
             pw.println("]");
 
             pw.close();
@@ -203,16 +209,23 @@ public class ProductoService {
         }
 
 
+
     }
 
-    private List getPorcionProductos(){
+    private List getPorcionProductos(RowBounds rowBounds){
         SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
         SqlSession sqlSession = factory.openSession();
         ProductoMapper productoMapper = sqlSession.getMapper(ProductoMapper.class);
-        List<ProductoEntity> productos = productoMapper.getAllProductos();
-        sqlSession.close();
-        return productos;
+        return productoMapper.getAllProductos(rowBounds);
     }
+
+    private int getTotalProductos(){
+        SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
+        SqlSession sqlSession = factory.openSession();
+        ProductoMapper productoMapper = sqlSession.getMapper(ProductoMapper.class);
+        return productoMapper.getCantidadTotalProductos();
+    }
+
 
 
 //    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
