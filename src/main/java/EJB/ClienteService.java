@@ -4,6 +4,7 @@ package EJB;
 
 import Beans.ProductoBean;
 import JPA.ClienteEntity;
+import org.jboss.resteasy.spi.HttpRequest;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -12,6 +13,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.ws.rs.core.Context;
 import java.util.List;
 
 /**
@@ -27,57 +29,104 @@ public class ClienteService {
     @EJB
     private ProductoService productoService;
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public ClienteEntity crearCliente(String nombre){
-        ClienteEntity cliente = new ClienteEntity();
-        cliente.setNombre(nombre);
-        cliente.setSaldo("0");
-        em.persist(cliente);
-        return cliente;
-    }
+    @EJB
+    private AutenticacionService autenticacionService;
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public List getClientes(){
-        Query query = em.createNamedQuery("cliente.findAll");
-        return query.getResultList();
-    }
+    public Object crearCliente(String nombre, HttpRequest httpRequest,
+                                      String accessToken){
+        String mensajeAutenticacion = autenticacionService.autenticar(accessToken, httpRequest);
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public Object getCliente(Integer id){
-        try{
-            return em.find(ClienteEntity.class, id.longValue());
-
-        }catch (Exception e){
-            e.printStackTrace();
-            return "No existe el cliente.";
+        if(mensajeAutenticacion.equals("si")){
+            try{
+                ClienteEntity cliente = new ClienteEntity();
+                cliente.setNombre(nombre);
+                cliente.setSaldo("0");
+                em.persist(cliente);
+                return cliente;
+            }catch (Exception e){
+                e.printStackTrace();
+                return "No se pudo crear el cliente.";
+            }
         }
+
+        return mensajeAutenticacion;
+    }
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public Object getClientes(HttpRequest httpRequest,
+                            String accessToken){
+        String mensajeAutenticacion = autenticacionService.autenticar(accessToken,
+                httpRequest);
+
+        if(mensajeAutenticacion.equals("si")){
+            Query query = em.createNamedQuery("cliente.findAll");
+            return query.getResultList();
+        }
+
+        return mensajeAutenticacion;
+    }
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public Object getCliente(Integer id, HttpRequest httpRequest,
+                             String accessToken){
+        String mensajeAutenticacion = autenticacionService.autenticar(accessToken,
+                httpRequest);
+
+        if(mensajeAutenticacion.equals("si")) {
+            try {
+                return em.find(ClienteEntity.class, id.longValue());
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                return "No existe el cliente.";
+            }
+        }
+
+        return mensajeAutenticacion;
     }
 
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public Object deleteCliente(Integer id){
-        try{
-            ClienteEntity cliente = em.find(ClienteEntity.class, id.longValue());
-            em.remove(cliente);
-            return "El cliente fue eliminado.";
-        }catch (Exception e){
-            e.printStackTrace();
-            return "El cliente no existe o no se pudo eliminar.";
+    public Object deleteCliente(Integer id, HttpRequest httpRequest,
+                                String accessToken){
+        String mensajeAutenticacion = autenticacionService.autenticar(accessToken,
+                httpRequest);
+
+        if(mensajeAutenticacion.equals("si")) {
+            try {
+                ClienteEntity cliente = em.find(ClienteEntity.class, id.longValue());
+                em.remove(cliente);
+                return "El cliente fue eliminado.";
+            } catch (Exception e) {
+                e.printStackTrace();
+                return "El cliente no existe o no se pudo eliminar.";
+            }
         }
+
+        return mensajeAutenticacion;
     }
 
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public Object updateCliente(Integer id, String nombre){
-        try{
-            ClienteEntity cliente = em.find(ClienteEntity.class, id.longValue());
-            cliente.setNombre(nombre);
-            em.persist(cliente);
-            return "Cliente actualizado.";
-        }catch (Exception e){
-            e.printStackTrace();
-            return "No se pudo actualizar el cliente.";
+    public Object updateCliente(Integer id, String nombre, HttpRequest httpRequest,
+                                String accessToken){
+        String mensajeAutenticacion = autenticacionService.autenticar(accessToken,
+                httpRequest);
+
+        if(mensajeAutenticacion.equals("si")) {
+            try {
+                ClienteEntity cliente = em.find(ClienteEntity.class, id.longValue());
+                cliente.setNombre(nombre);
+                em.persist(cliente);
+                return "Cliente actualizado.";
+            } catch (Exception e) {
+                e.printStackTrace();
+                return "No se pudo actualizar el cliente.";
+            }
         }
+
+        return mensajeAutenticacion;
     }
 
 
