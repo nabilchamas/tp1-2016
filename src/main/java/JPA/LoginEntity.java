@@ -7,7 +7,8 @@ import javax.persistence.*;
  */
 @Entity
 @NamedQueries({
-        @NamedQuery(name = "login.findByUsuario", query = "select v from LoginEntity v where v.usuario=:usuario")
+        @NamedQuery(name = "login.findByUsuario", query = "select v from LoginEntity v where v.usuario=:usuario"),
+        @NamedQuery(name = "login.findByAccessToken", query = "select v from LoginEntity v where v.accessToken=:accessToken")
 })
 @Table(name = "login", schema = "public", catalog = "tp1")
 public class LoginEntity {

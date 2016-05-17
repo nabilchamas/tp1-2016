@@ -6,6 +6,9 @@ import javax.persistence.*;
  * Created by nabil on 17/05/16.
  */
 @Entity
+@NamedQueries({
+        @NamedQuery(name = "url.findByRol", query = "select v from UrlEntity v where v.rol=:rol")
+})
 @Table(name = "url", schema = "public", catalog = "tp1")
 public class UrlEntity {
     private long id;
