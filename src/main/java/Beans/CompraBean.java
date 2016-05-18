@@ -10,18 +10,14 @@ public class CompraBean {
 
     public static HashMap<Integer, CompraBean> compras= new HashMap<Integer, CompraBean>();
 
-    private Integer id;
+
     private static Integer idCounter=0;
     private ProveedorBean proveedor;
     private ArrayList<ProductoBean> productos;
 
-    public CompraBean() {
-        this.id = idCounter++;
-    }
 
-    public Integer getId() {
-        return id;
-    }
+
+
 
     public ProveedorBean getProveedor() {
         return proveedor;

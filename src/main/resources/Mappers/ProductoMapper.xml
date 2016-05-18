@@ -53,7 +53,14 @@
     </select>
 
     <select id='getAllProductos' fetchSize="100" resultSetType="SCROLL_SENSITIVE" useCache="false" resultMap='ProductoResult'>
-        SELECT * FROM producto  left outer JOIN  proveedor On proveedor.id = producto.proveedor_id
+        SELECT
+         producto.id,
+        producto.nombre ,
+        precio,
+        cantidad,
+        proveedor_id,
+        proveedor.nombre proveedor_name
+         FROM producto  left outer JOIN  proveedor On proveedor.id = producto.proveedor_id
     </select>
     <select id='getCantidadTotalProductos'  resultType="Integer">
         SELECT COUNT(*) FROM producto  left outer JOIN  proveedor On proveedor.id = producto.proveedor_id

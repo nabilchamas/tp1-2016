@@ -8,7 +8,7 @@ import java.util.HashMap;
 public class PagoBean {
     public static HashMap<Integer, PagoBean> pagos = new HashMap<Integer, PagoBean>();
 
-    private Integer id;
+
     private static Integer idCounter=0;
     private ClienteBean cliente;
     private Integer monto;
@@ -18,12 +18,9 @@ public class PagoBean {
         this.cliente = cliente;
         this.monto = monto;
         this.fecha = fecha;
-        this.id = idCounter++;
     }
 
-    public Integer getId() {
-        return id;
-    }
+
 
 
     public ClienteBean getCliente() {

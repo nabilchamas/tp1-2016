@@ -21,6 +21,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.*;
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.List;
 
 
@@ -35,6 +36,8 @@ public class ProductoService {
 
     @EJB
     ProductoDuplicadoService productoDuplicadoService;
+
+    private static final String FILE_NAME = "/tmp/producto";
 
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -163,16 +166,17 @@ public class ProductoService {
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void crearFileProductos(){
         try{
-            File file =new File("/home/sortiz/Desktop/productos");
+
+            File file =new File(FILE_NAME);
             if(!file.exists()){
                 file.createNewFile();
             }else {
                 file.delete();
                 file.createNewFile();
             }
+            Writer w = new OutputStreamWriter(new FileOutputStream(file), "UTF-8");
 
-            FileWriter fw = new FileWriter(file,true);
-            BufferedWriter bw = new BufferedWriter(fw);
+            BufferedWriter bw = new BufferedWriter(w);
             PrintWriter pw = new PrintWriter(bw);
 
             //JSON
@@ -196,7 +200,7 @@ public class ProductoService {
                 rowBounds = new RowBounds(offset,100);
             }
             pw.println("]");
-
+            w.close();
             pw.close();
 
             System.out.println("Data successfully appended at the end of file");
