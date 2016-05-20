@@ -25,8 +25,12 @@ public class Venta {
     public Response crearVenta(@QueryParam("clienteId") Integer clienteId,
                                @QueryParam("productosId") List<Integer> productosId,
                                @QueryParam("cantidades") List<Integer> cantidades){
-        return Response.status(200).entity(ventaService.crearVenta(clienteId,
-                productosId, cantidades)).build();
+        try {
+            return Response.status(200).entity(ventaService.crearVenta(clienteId,
+                    productosId, cantidades)).build();
+        }catch (Exception e){
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("No se pudo crear la venta").build();
+        }
     }
 
 

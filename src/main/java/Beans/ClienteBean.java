@@ -16,7 +16,7 @@ public class ClienteBean {
 
     public ClienteBean(String nombre) {
         this.nombre = nombre;
-        this.id = idCounter++;
+
         this.saldo = 0;
     }
 

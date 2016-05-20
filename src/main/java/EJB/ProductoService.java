@@ -9,6 +9,7 @@ import Mappers.ProveedorMapper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.hibernate.exception.ConstraintViolationException;
@@ -20,6 +21,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.*;
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.List;
 
 
@@ -34,6 +36,8 @@ public class ProductoService {
 
     @EJB
     ProductoDuplicadoService productoDuplicadoService;
+
+    private static final String FILE_NAME = "/tmp/producto";
 
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -81,7 +85,7 @@ public class ProductoService {
         SqlSession sqlSession = factory.openSession();
         ProductoMapper productoMapper = sqlSession.getMapper(ProductoMapper.class);
         sqlSession.close();
-        return productoMapper.getAllProductos();
+        return productoMapper.getAllProductosByProveedorId(1);
     }
 
 
@@ -162,35 +166,41 @@ public class ProductoService {
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void crearFileProductos(){
         try{
-            File file =new File("/home/sortiz/Desktop/productos");
+
+            File file =new File(FILE_NAME);
             if(!file.exists()){
                 file.createNewFile();
             }else {
                 file.delete();
                 file.createNewFile();
             }
+            Writer w = new OutputStreamWriter(new FileOutputStream(file), "UTF-8");
 
-            FileWriter fw = new FileWriter(file,true);
-            BufferedWriter bw = new BufferedWriter(fw);
+            BufferedWriter bw = new BufferedWriter(w);
             PrintWriter pw = new PrintWriter(bw);
 
             //JSON
             boolean empieza=true;
-            int offset=0;
+            int offset=0, total = getTotalProductos();
+
+            RowBounds rowBounds = new RowBounds(offset,100);
             List productos;
             ObjectMapper mapper = new ObjectMapper();
             String jsonString;
             pw.println("[");
-            productos = getPorcionProductos();
-            for (Object producto : productos) {
+            while(rowBounds.getOffset() != total) {
+                productos = getPorcionProductos(rowBounds);
+                for (Object producto : productos) {
                     jsonString = mapper.writeValueAsString(producto);
                     if(!empieza) pw.print(",");
                     pw.println(jsonString);
                     empieza=false;
                 }
-
+                offset += productos.size();
+                rowBounds = new RowBounds(offset,100);
+            }
             pw.println("]");
-
+            w.close();
             pw.close();
 
             System.out.println("Data successfully appended at the end of file");
@@ -203,16 +213,23 @@ public class ProductoService {
         }
 
 
+
     }
 
-    private List getPorcionProductos(){
+    private List getPorcionProductos(RowBounds rowBounds){
         SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
         SqlSession sqlSession = factory.openSession();
         ProductoMapper productoMapper = sqlSession.getMapper(ProductoMapper.class);
-        List<ProductoEntity> productos = productoMapper.getAllProductos();
-        sqlSession.close();
-        return productos;
+        return productoMapper.getAllProductos(rowBounds);
     }
+
+    private int getTotalProductos(){
+        SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
+        SqlSession sqlSession = factory.openSession();
+        ProductoMapper productoMapper = sqlSession.getMapper(ProductoMapper.class);
+        return productoMapper.getCantidadTotalProductos();
+    }
+
 
 
 //    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)

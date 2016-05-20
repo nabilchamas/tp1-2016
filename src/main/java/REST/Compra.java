@@ -24,8 +24,12 @@ public class Compra {
     public Response crearCompra(@QueryParam("proveedorId") Integer proveedorId,
                                 @QueryParam("productosId") List<Integer> productosId,
                                 @QueryParam("cantidades") List<Integer> cantidades){
-        return Response.status(200).entity(compraService.crearCompra(proveedorId,
-                productosId, cantidades)).build();
+        try {
+            return Response.status(200).entity(compraService.crearCompra(proveedorId,
+                    productosId, cantidades)).build();
+        }catch (Exception e){
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("No se pudo Crear La compra").build();
+        }
 
     }
 

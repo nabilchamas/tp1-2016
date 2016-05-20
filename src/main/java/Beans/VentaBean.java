@@ -10,19 +10,15 @@ public class VentaBean {
 
     public static HashMap<Integer, VentaBean> ventas = new HashMap<Integer, VentaBean>();
 
-    private Integer id;
+
     private static Integer idCounter=0;
     private ClienteBean cliente;
     private ArrayList<ProductoBean> productos;
 
 
-    public VentaBean() {
-        this.id = idCounter++;
-    }
 
-    public Integer getId() {
-        return id;
-    }
+
+
 
     public ClienteBean getCliente() {
         return cliente;
