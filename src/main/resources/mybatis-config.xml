@@ -40,5 +40,6 @@
         <mapper resource="Mappers/PagoMapper.xml"/>
         <mapper resource="Mappers/ProductoDuplicadoMapper.xml"/>
         <mapper resource="Mappers/LoginMapper.xml"/>
+        <mapper resource="Mappers/UrlMapper.xml"/>
     </mappers>
 </configuration>

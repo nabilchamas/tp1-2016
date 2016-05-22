@@ -1,7 +1,6 @@
 package EJB;
 
 
-
 import Mappers.ClienteMapper;
 import Beans.ProductoBean;
 import JPA.ClienteEntity;
@@ -10,6 +9,7 @@ import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.jboss.resteasy.spi.HttpRequest;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -33,12 +33,14 @@ public class ClienteService {
     private EntityManager em;
 
 
-
     @EJB
     private ProductoService productoService;
 
+    @EJB
+    private AutenticacionService autenticacionService;
+
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public ClienteEntity crearCliente(String nombre){
+    public ClienteEntity crearCliente(String nombre) {
         ClienteEntity cliente = new ClienteEntity();
         cliente.setNombre(nombre);
         cliente.setSaldo("0");
@@ -51,36 +53,44 @@ public class ClienteService {
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public List getClientes() {
-       SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
-        SqlSession sqlSession = factory.openSession();
-        ClienteMapper clienteMapper = sqlSession.getMapper(ClienteMapper.class);
-        List<ClienteEntity> clientes = clienteMapper.getAllClientes();
-        sqlSession.close();
-            return clientes;
+    public Object getClientes(HttpRequest httpRequest, String accessToken) {
 
+        String respuesta = autenticacionService.autenticar(accessToken, httpRequest);
 
+        if(respuesta.equals("si")){
+            try{
+                SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
+                SqlSession sqlSession = factory.openSession();
+                ClienteMapper clienteMapper = sqlSession.getMapper(ClienteMapper.class);
+                List<ClienteEntity> clientes = clienteMapper.getAllClientes();
+                sqlSession.close();
+                return clientes;
+            }catch (Exception e){
+                e.printStackTrace();
+                return "Error al tratar obtener clientes.";
+            }
+        }
 
-
+        return respuesta;
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public Object getCliente(Integer id){
+    public Object getCliente(Integer id) {
         SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
         SqlSession sqlSession = factory.openSession();
         ClienteMapper clienteMapper = sqlSession.getMapper(ClienteMapper.class);
-       ClienteEntity cliente = clienteMapper.getClienteById(id);
+        ClienteEntity cliente = clienteMapper.getClienteById(id);
         sqlSession.close();
-        if(cliente != null){
+        if (cliente != null) {
             return cliente;
-        }else{
-            return "No existe el cliente con el id: "+ id.toString();
+        } else {
+            return "No existe el cliente con el id: " + id.toString();
         }
     }
 
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public Object deleteCliente(Integer id){
+    public Object deleteCliente(Integer id) {
         SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
         SqlSession sqlSession = factory.openSession();
         ClienteMapper clienteMapper = sqlSession.getMapper(ClienteMapper.class);
@@ -91,22 +101,22 @@ public class ClienteService {
 
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public Object updateCliente(Integer id, String nombre){
-            SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
-            SqlSession sqlSession = factory.openSession();
-            ClienteMapper clienteMapper = sqlSession.getMapper(ClienteMapper.class);
-            ClienteEntity cliente = clienteMapper.getClienteById(id);
-            cliente.setNombre(nombre);
-            clienteMapper.updateCliente(cliente);
-            sqlSession.close();
-            return "Cliente actualizado.";
+    public Object updateCliente(Integer id, String nombre) {
+        SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
+        SqlSession sqlSession = factory.openSession();
+        ClienteMapper clienteMapper = sqlSession.getMapper(ClienteMapper.class);
+        ClienteEntity cliente = clienteMapper.getClienteById(id);
+        cliente.setNombre(nombre);
+        clienteMapper.updateCliente(cliente);
+        sqlSession.close();
+        return "Cliente actualizado.";
 
     }
 
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void crearProductos(List<ProductoBean> productosBean){
-        for(ProductoBean productoBean: productosBean){
+    public void crearProductos(List<ProductoBean> productosBean) {
+        for (ProductoBean productoBean : productosBean) {
             Object o = productoService.crearProducto(productoBean.getNombre(),
                     productoBean.getPrecio(),
                     productoBean.getCantidad(),

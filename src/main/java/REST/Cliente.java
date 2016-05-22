@@ -2,9 +2,11 @@ package REST;
 
 import EJB.ClienteService;
 import JPA.ClienteEntity;
+import org.jboss.resteasy.spi.HttpRequest;
 
 import javax.ejb.EJB;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
 /**
@@ -31,8 +33,10 @@ public class Cliente {
 
     @GET
     @Produces("application/json")
-    public Response getClientes(){
-        return Response.status(200).entity(clienteService.getClientes()).build();
+    public Response getClientes(@Context HttpRequest httpRequest,
+                                @HeaderParam("accessToken")String accessToken){
+        return Response.status(200).entity(clienteService.getClientes(httpRequest,
+                accessToken)).build();
     }
 
     @GET

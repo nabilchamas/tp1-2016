@@ -8,4 +8,5 @@ import JPA.LoginEntity;
 public interface LoginMapper {
 
     LoginEntity getLoginByUsuario(String usuario);
+    LoginEntity getLoginByAccessToken(String accessToken);
 }

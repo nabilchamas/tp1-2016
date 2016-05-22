@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE mapper PUBLIC '-//mybatis.org//DTD Mapper 3.0//EN'
+        'http://mybatis.org/dtd/mybatis-3-mapper.dtd'>
+<mapper namespace="Mappers.UrlMapper">
+
+    <resultMap type="JPA.UrlEntity" id="UrlResult" >
+        <id property="id" column="id"/>
+        <result property="nombre" column="nombre" />
+        <result property="metodo" column="metodo" />
+        <result property="rol" column="rol"/>
+    </resultMap>
+
+    <select id="getUrlsByRol" parameterType="String" resultMap="UrlResult">
+        SELECT
+        id as id,
+        nombre as nombre,
+        metodo as metodo,
+        rol as rol
+        FROM url
+        WHERE rol=#{rol};
+    </select>
+</mapper>

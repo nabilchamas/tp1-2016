@@ -12,5 +12,16 @@
         FROM login
         WHERE usuario=#{usuario};
     </select>
+
+    <select id="getLoginByAccessToken" parameterType="String" resultType="JPA.LoginEntity">
+        SELECT
+        usuario as usuario,
+        password as password,
+        rol as rol,
+        id as id,
+        access_token as accessToken
+        FROM login
+        WHERE access_token=#{accessToken};
+    </select>
     
 </mapper>
