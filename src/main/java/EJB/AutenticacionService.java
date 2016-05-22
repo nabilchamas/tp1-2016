@@ -33,13 +33,13 @@ public class AutenticacionService {
             for(UrlEntity urlEntity: urls){
                 String path = httpRequest.getUri().getPath();
                 String metodo = httpRequest.getHttpMethod();
-                if(urlEntity.getNombre().equals(path) &&
+                if(path.startsWith(urlEntity.getNombre()) &&
                         urlEntity.getMetodo().equals(metodo)){
                     return "si";
                 }
             }
 
-            return "no";
+            return "No posee los permisos para esta url+metodo.";
         }catch (Exception e){
             e.printStackTrace();
             return "No se pudo autenticar";

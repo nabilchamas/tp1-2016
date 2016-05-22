@@ -1,7 +1,6 @@
 package REST;
 
 import EJB.ClienteService;
-import JPA.ClienteEntity;
 import org.jboss.resteasy.spi.HttpRequest;
 
 import javax.ejb.EJB;
@@ -25,10 +24,11 @@ public class Cliente {
     @POST
     @Path("{nombre}")
     @Produces("application/json")
-    public Response crearCliente(@PathParam("nombre") String nombre){
-        ClienteEntity cliente = clienteService.crearCliente(nombre);
-
-        return Response.status(200).entity(cliente).build();
+    public Response crearCliente(@PathParam("nombre") String nombre,
+                                 @Context HttpRequest httpRequest,
+                                 @HeaderParam("accessToken") String accessToken){
+        return Response.status(200).entity(clienteService.crearCliente(nombre,
+                httpRequest, accessToken)).build();
     }
 
     @GET
@@ -42,21 +42,30 @@ public class Cliente {
     @GET
     @Produces("application/json")
     @Path("{id}")
-    public Response getCliente(@PathParam("id") Integer id){
-        return Response.status(200).entity(clienteService.getCliente(id)).build();
+    public Response getCliente(@PathParam("id") Integer id,
+                               @Context HttpRequest httpRequest,
+                               @HeaderParam("accessToken") String accessToken){
+        return Response.status(200).entity(clienteService.getCliente(id,
+                httpRequest, accessToken)).build();
     }
 
     @DELETE
     @Path("{id}")
-    public Response borrarCliente(@PathParam("id") Integer id){
-        return Response.status(200).entity(clienteService.deleteCliente(id)).build();
+    public Response borrarCliente(@PathParam("id") Integer id,
+                                  @Context HttpRequest httpRequest,
+                                  @HeaderParam("accessToken") String accessToken){
+        return Response.status(200).entity(clienteService.deleteCliente(id,
+                httpRequest, accessToken)).build();
     }
 
 
     @PUT
     @Path("{id}")
     public Response actualizarCliente(@PathParam("id") Integer id,
-                                      @QueryParam("nombre") String nombre){
-        return Response.status(200).entity(clienteService.updateCliente(id, nombre)).build();
+                                      @QueryParam("nombre") String nombre,
+                                      @Context HttpRequest httpRequest,
+                                      @HeaderParam("accessToken") String accessToken){
+        return Response.status(200).entity(clienteService.updateCliente(id, nombre,
+                httpRequest, accessToken)).build();
     }
 }
