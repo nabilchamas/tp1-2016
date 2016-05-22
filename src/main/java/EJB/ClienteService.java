@@ -1,25 +1,20 @@
 package EJB;
 
 
+import Interceptors.AuthInterceptor;
 import Mappers.ClienteMapper;
 import Beans.ProductoBean;
 import JPA.ClienteEntity;
 import Mappers.MybatisUtils;
-import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.jboss.resteasy.spi.HttpRequest;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
+import javax.interceptor.Interceptors;
 import java.util.List;
 
 /**
@@ -29,10 +24,6 @@ import java.util.List;
 @Stateless
 public class ClienteService {
 
-    @PersistenceContext(unitName = "NewPersistenceUnit")
-    private EntityManager em;
-
-
     @EJB
     private ProductoService productoService;
 
@@ -40,58 +31,48 @@ public class ClienteService {
     private AutenticacionService autenticacionService;
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public Object crearCliente(String nombre,
-                               HttpRequest httpRequest, String accessToken) {
-        String respuesta = autenticacionService.autenticar(accessToken, httpRequest);
-
-        if(respuesta.equals("si")) {
-            try {
-                ClienteEntity cliente = new ClienteEntity();
-                cliente.setNombre(nombre);
-                cliente.setSaldo("0");
-                SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
-                SqlSession sqlSession = factory.openSession();
-                ClienteMapper clienteMapper = sqlSession.getMapper(ClienteMapper.class);
-                clienteMapper.insertCliente(cliente);
-                sqlSession.close();
-                return cliente;
-            } catch (Exception e) {
-                e.printStackTrace();
-                return "No se pudo crear el cliente.";
-            }
+    @Interceptors(AuthInterceptor.class)
+    public Object crearCliente(String accessToken,
+                               HttpRequest httpRequest,
+                               String nombre) {
+        try {
+            ClienteEntity cliente = new ClienteEntity();
+            cliente.setNombre(nombre);
+            cliente.setSaldo("0");
+            SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
+            SqlSession sqlSession = factory.openSession();
+            ClienteMapper clienteMapper = sqlSession.getMapper(ClienteMapper.class);
+            clienteMapper.insertCliente(cliente);
+            sqlSession.close();
+            return cliente;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "No se pudo crear el cliente.";
         }
-
-        return respuesta;
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public Object getClientes(HttpRequest httpRequest, String accessToken) {
-
-        String respuesta = autenticacionService.autenticar(accessToken, httpRequest);
-
-        if(respuesta.equals("si")){
-            try{
-                SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
-                SqlSession sqlSession = factory.openSession();
-                ClienteMapper clienteMapper = sqlSession.getMapper(ClienteMapper.class);
-                List<ClienteEntity> clientes = clienteMapper.getAllClientes();
-                sqlSession.close();
-                return clientes;
-            }catch (Exception e){
-                e.printStackTrace();
-                return "Error al tratar obtener clientes.";
-            }
+    @Interceptors(AuthInterceptor.class)
+    public Object getClientes(String accessToken, HttpRequest httpRequest) {
+        try{
+            SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
+            SqlSession sqlSession = factory.openSession();
+            ClienteMapper clienteMapper = sqlSession.getMapper(ClienteMapper.class);
+            List<ClienteEntity> clientes = clienteMapper.getAllClientes();
+            sqlSession.close();
+            return clientes;
+        }catch (Exception e){
+            e.printStackTrace();
+            return "Error al tratar obtener clientes.";
         }
-
-        return respuesta;
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public Object getCliente(Integer id,
-                             HttpRequest httpRequest, String accessToken) {
-        String respuesta = autenticacionService.autenticar(accessToken, httpRequest);
-
-        if(respuesta.equals("si")) {
+    @Interceptors(AuthInterceptor.class)
+    public Object getCliente(String accessToken,
+                             HttpRequest httpRequest,
+                             Integer id) {
+        try {
             SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
             SqlSession sqlSession = factory.openSession();
             ClienteMapper clienteMapper = sqlSession.getMapper(ClienteMapper.class);
@@ -102,52 +83,51 @@ public class ClienteService {
             } else {
                 return "No existe el cliente con el id: " + id.toString();
             }
+        }catch (Exception e){
+            e.printStackTrace();
+            return "No se pudo obtener el cliente.";
         }
-
-        return respuesta;
     }
 
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public Object deleteCliente(Integer id,
-                                HttpRequest httpRequest, String accessToken) {
-        String respuesta = autenticacionService.autenticar(accessToken, httpRequest);
-
-        if(respuesta.equals("si")) {
+    @Interceptors(AuthInterceptor.class)
+    public Object deleteCliente(String accessToken,
+                                HttpRequest httpRequest,
+                                Integer id) {
+        try {
             SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
             SqlSession sqlSession = factory.openSession();
             ClienteMapper clienteMapper = sqlSession.getMapper(ClienteMapper.class);
             clienteMapper.deleteCliente(id);
             sqlSession.close();
             return "Cliente eliminado";
+        }catch (Exception e){
+            e.printStackTrace();
+            return "No se pudo borrar el cliente.";
         }
-
-        return respuesta;
     }
 
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public Object updateCliente(Integer id, String nombre,
-                                HttpRequest httpRequest, String accessToken) {
-        String respuesta = autenticacionService.autenticar(accessToken, httpRequest);
-
-        if(respuesta.equals("si")) {
-            try {
-                SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
-                SqlSession sqlSession = factory.openSession();
-                ClienteMapper clienteMapper = sqlSession.getMapper(ClienteMapper.class);
-                ClienteEntity cliente = clienteMapper.getClienteById(id);
-                cliente.setNombre(nombre);
-                clienteMapper.updateCliente(cliente);
-                sqlSession.close();
-                return "Cliente actualizado.";
-            } catch (Exception e) {
-                e.printStackTrace();
-                return "No se pudo actualizar el cliente.";
-            }
+    @Interceptors(AuthInterceptor.class)
+    public Object updateCliente(String accessToken,
+                                HttpRequest httpRequest,
+                                Integer id,
+                                String nombre) {
+        try {
+            SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
+            SqlSession sqlSession = factory.openSession();
+            ClienteMapper clienteMapper = sqlSession.getMapper(ClienteMapper.class);
+            ClienteEntity cliente = clienteMapper.getClienteById(id);
+            cliente.setNombre(nombre);
+            clienteMapper.updateCliente(cliente);
+            sqlSession.close();
+            return "Cliente actualizado.";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "No se pudo actualizar el cliente.";
         }
-
-        return respuesta;
     }
 
 

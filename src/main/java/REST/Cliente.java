@@ -27,16 +27,16 @@ public class Cliente {
     public Response crearCliente(@PathParam("nombre") String nombre,
                                  @Context HttpRequest httpRequest,
                                  @HeaderParam("accessToken") String accessToken){
-        return Response.status(200).entity(clienteService.crearCliente(nombre,
-                httpRequest, accessToken)).build();
+        return Response.status(200).entity(clienteService.crearCliente(accessToken,
+                httpRequest, nombre)).build();
     }
 
     @GET
     @Produces("application/json")
     public Response getClientes(@Context HttpRequest httpRequest,
                                 @HeaderParam("accessToken")String accessToken){
-        return Response.status(200).entity(clienteService.getClientes(httpRequest,
-                accessToken)).build();
+        return Response.status(200).entity(clienteService.getClientes(accessToken,
+                httpRequest)).build();
     }
 
     @GET
@@ -45,8 +45,8 @@ public class Cliente {
     public Response getCliente(@PathParam("id") Integer id,
                                @Context HttpRequest httpRequest,
                                @HeaderParam("accessToken") String accessToken){
-        return Response.status(200).entity(clienteService.getCliente(id,
-                httpRequest, accessToken)).build();
+        return Response.status(200).entity(clienteService.getCliente(accessToken,
+                httpRequest, id)).build();
     }
 
     @DELETE
@@ -54,8 +54,8 @@ public class Cliente {
     public Response borrarCliente(@PathParam("id") Integer id,
                                   @Context HttpRequest httpRequest,
                                   @HeaderParam("accessToken") String accessToken){
-        return Response.status(200).entity(clienteService.deleteCliente(id,
-                httpRequest, accessToken)).build();
+        return Response.status(200).entity(clienteService.deleteCliente(accessToken,
+                httpRequest, id)).build();
     }
 
 
@@ -65,7 +65,7 @@ public class Cliente {
                                       @QueryParam("nombre") String nombre,
                                       @Context HttpRequest httpRequest,
                                       @HeaderParam("accessToken") String accessToken){
-        return Response.status(200).entity(clienteService.updateCliente(id, nombre,
-                httpRequest, accessToken)).build();
+        return Response.status(200).entity(clienteService.updateCliente(accessToken,
+                httpRequest, id, nombre)).build();
     }
 }
