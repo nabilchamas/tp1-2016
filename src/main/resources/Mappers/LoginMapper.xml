@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE mapper PUBLIC '-//mybatis.org//DTD Mapper 3.0//EN'
+        'http://mybatis.org/dtd/mybatis-3-mapper.dtd'>
+<mapper namespace="Mappers.LoginMapper">
+    <select id="getLoginByUsuario" parameterType="String" resultType="JPA.LoginEntity">
+        SELECT
+        usuario as usuario,
+        password as password,
+        rol as rol,
+        id as id,
+        access_token as accessToken
+        FROM login
+        WHERE usuario=#{usuario};
+    </select>
+    
+</mapper>
