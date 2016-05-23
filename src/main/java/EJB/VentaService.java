@@ -9,10 +9,12 @@ import JPA.VentaEntity;
 import Mappers.*;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
+import Interceptors.AuthInterceptor;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.interceptor.Interceptors;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -28,6 +30,7 @@ import java.util.List;
  */
 
 @Stateless
+@Interceptors(AuthInterceptor.class)
 public class VentaService {
 
 
