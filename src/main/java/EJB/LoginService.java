@@ -18,10 +18,11 @@ public class LoginService {
     public Object getLogin(String usuario, String password) {
         SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
         SqlSession sqlSession = factory.openSession();
-        LoginMapper loginMapper = sqlSession.getMapper(LoginMapper.class);
+
         try {
+            LoginMapper loginMapper = sqlSession.getMapper(LoginMapper.class);
             LoginEntity loginEntity = loginMapper.getLoginByUsuario(usuario);
-            sqlSession.close();
+
             if (loginEntity.getPassword().equals(password)) {
                 return loginEntity.getAccessToken();
             } else {
@@ -30,6 +31,8 @@ public class LoginService {
         }catch (Exception e){
             e.printStackTrace();
             return "No se pudo realizar el login.";
+        }finally {
+            sqlSession.close();
         }
     }
 }

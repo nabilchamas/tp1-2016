@@ -35,19 +35,23 @@ public class ClienteService {
     public Object crearCliente(String accessToken,
                                HttpRequest httpRequest,
                                String nombre) {
+        SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
+        SqlSession sqlSession = factory.openSession();
+
         try {
             ClienteEntity cliente = new ClienteEntity();
             cliente.setNombre(nombre);
             cliente.setSaldo("0");
-            SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
-            SqlSession sqlSession = factory.openSession();
+
             ClienteMapper clienteMapper = sqlSession.getMapper(ClienteMapper.class);
             clienteMapper.insertCliente(cliente);
-            sqlSession.close();
+
             return cliente;
         } catch (Exception e) {
             e.printStackTrace();
             return "No se pudo crear el cliente.";
+        }finally {
+            sqlSession.close();
         }
     }
 

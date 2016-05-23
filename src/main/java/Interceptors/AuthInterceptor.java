@@ -26,17 +26,19 @@ public class AuthInterceptor {
     public Object autenticar(InvocationContext context){
         Object parametros[] = context.getParameters();
 
+        SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
+        SqlSession sqlSession = factory.openSession();
+
         try{
             String accessToken = (String)parametros[0];
             HttpRequest httpRequest = (HttpRequest)parametros[1];
 
-            SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
-            SqlSession sqlSession = factory.openSession();
             LoginMapper loginMapper = sqlSession.getMapper(LoginMapper.class);
             LoginEntity loginEntity = loginMapper.getLoginByAccessToken(accessToken);
 
             UrlMapper urlMapper = sqlSession.getMapper(UrlMapper.class);
             List<UrlEntity> urls = urlMapper.getUrlsByRol(loginEntity.getRol());
+
             for(UrlEntity urlEntity: urls){
                 String path = httpRequest.getUri().getPath();
                 String metodo = httpRequest.getHttpMethod();
@@ -50,6 +52,8 @@ public class AuthInterceptor {
         }catch (Exception e){
             e.printStackTrace();
             return "No se pudo autenticar";
+        }finally {
+            sqlSession.close();
         }
     }
 
