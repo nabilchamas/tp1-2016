@@ -30,6 +30,8 @@ public class AutenticacionService {
 
             UrlMapper urlMapper = sqlSession.getMapper(UrlMapper.class);
             List<UrlEntity> urls = urlMapper.getUrlsByRol(loginEntity.getRol());
+
+            sqlSession.close();
             for(UrlEntity urlEntity: urls){
                 String path = httpRequest.getUri().getPath();
                 String metodo = httpRequest.getHttpMethod();
