@@ -1,7 +1,6 @@
 package EJB;
 
 
-
 import JPA.ClienteEntity;
 import JPA.DetalleVentaEntity;
 import JPA.ProductoEntity;
@@ -10,6 +9,7 @@ import Mappers.*;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import Interceptors.AuthInterceptor;
+import org.jboss.resteasy.spi.HttpRequest;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -34,24 +34,24 @@ import java.util.List;
 public class VentaService {
 
 
-
-
     @POST
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     @Transactional(value = Transactional.TxType.REQUIRES_NEW, rollbackOn = Exception.class)
-    public Object crearVenta(Integer clienteId, List<Integer> productosId,
-                             List<Integer> cantidades) throws Exception{
-    SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
+    public Object crearVenta(String accessToken,
+                             HttpRequest httpRequest,
+                             Integer clienteId, List<Integer> productosId,
+                             List<Integer> cantidades) throws Exception {
+        SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
         SqlSession sqlSession = factory.openSession();
         ClienteMapper clienteMapper = sqlSession.getMapper(ClienteMapper.class);
         VentaMapper ventaMapper = sqlSession.getMapper(VentaMapper.class);
         ProductoMapper productoMapper = sqlSession.getMapper(ProductoMapper.class);
         DetalleVentaMapper detalleventaMapper = sqlSession.getMapper(DetalleVentaMapper.class);
-        if(productosId.size()!=cantidades.size()){
+        if (productosId.size() != cantidades.size()) {
             return "Se necesita igual numero de parametros de productosId y cantidades.";
         }
 
-        try{
+        try {
             VentaEntity venta = new VentaEntity();
             ClienteEntity cliente = clienteMapper.getClienteById(clienteId);
             venta.setCliente(cliente);
@@ -59,9 +59,9 @@ public class VentaService {
 
             //em.flush();
 
-            Integer nuevoSaldo=Integer.parseInt(cliente.getSaldo());
+            Integer nuevoSaldo = Integer.parseInt(cliente.getSaldo());
             List<DetalleVentaEntity> detalles = new ArrayList<DetalleVentaEntity>();
-            for(int i=0; i<productosId.size(); i++){
+            for (int i = 0; i < productosId.size(); i++) {
                 Integer productoId = productosId.get(i);
                 Integer cantidad = cantidades.get(i), nuevaCantidad = 0;
                 DetalleVentaEntity detalleVentaEntity = new DetalleVentaEntity();
@@ -72,13 +72,13 @@ public class VentaService {
                 detalleVentaEntity.setVenta(venta);
 
                 //calcula nuevo saldo
-                nuevoSaldo += (int)Float.parseFloat(producto.getPrecio())*cantidad;
+                nuevoSaldo += (int) Float.parseFloat(producto.getPrecio()) * cantidad;
                 //calcula nuevo stock
-                if(Integer.parseInt(producto.getCantidad()) > cantidad) {
+                if (Integer.parseInt(producto.getCantidad()) > cantidad) {
                     nuevaCantidad = Integer.parseInt(producto.getCantidad()) - cantidad;
                     producto.setCantidad(nuevaCantidad.toString());
                     productoMapper.updateProducto(producto);
-                }else{
+                } else {
                     throw new Exception("Cantidad Supera a stock");
                 }
 
@@ -92,7 +92,7 @@ public class VentaService {
             clienteMapper.updateCliente(cliente);
             return "Venta realizada exitosamente";
 
-        }finally {
+        } finally {
             sqlSession.close();
         }
     }
@@ -100,7 +100,8 @@ public class VentaService {
 
     @GET
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public List getVentas(){
+    public List getVentas(String accessToken,
+                          HttpRequest httpRequest) {
         SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
         SqlSession sqlSession = factory.openSession();
         VentaMapper ventaMapper = sqlSession.getMapper(VentaMapper.class);
@@ -112,7 +113,8 @@ public class VentaService {
 
     @GET
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public Object getVenta(Integer id){
+    public Object getVenta(String accessToken,
+                           HttpRequest httpRequest, Integer id) {
         SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
         SqlSession sqlSession = factory.openSession();
         VentaMapper ventaMapper = sqlSession.getMapper(VentaMapper.class);
@@ -121,10 +123,10 @@ public class VentaService {
             VentaEntity venta = ventaMapper.getVentaById(id);
             venta.setDetalles(detalleventaMapper.getAllDetallesVentasByVentaId(id));
             return venta;
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return "No se encontro o no existe la venta.";
-        }finally {
+        } finally {
             sqlSession.close();
         }
     }
@@ -132,19 +134,21 @@ public class VentaService {
 
     @DELETE
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public Object deleteVenta(Integer id){
+    public Object deleteVenta(String accessToken,
+                              HttpRequest httpRequest,
+                              Integer id) {
         SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
         SqlSession sqlSession = factory.openSession();
-        try{
+        try {
             DetalleVentaMapper detalleVentaMapper = sqlSession.getMapper(DetalleVentaMapper.class);
             VentaMapper ventaMapper = sqlSession.getMapper(VentaMapper.class);
             detalleVentaMapper.deleteDetalleVenta(id);
             ventaMapper.deleteVenta(id);
             return "Venta eliminada.";
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return "No se pudo eliminar o no existe la venta.";
-        }finally {
+        } finally {
             sqlSession.close();
         }
     }
