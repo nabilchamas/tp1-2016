@@ -8,6 +8,7 @@ import Mappers.*;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import Interceptors.AuthInterceptor;
+import org.jboss.resteasy.spi.HttpRequest;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -30,7 +31,8 @@ public class CompraService {
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     @Transactional(value = Transactional.TxType.REQUIRES_NEW, rollbackOn = Exception.class)
-    public Object crearCompra(Integer proveedorId, List<Integer> productosId,
+    public Object crearCompra(String accessToken, HttpRequest httpRequest,
+                              Integer proveedorId, List<Integer> productosId,
                               List<Integer> cantidades) throws Exception{
         SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
         SqlSession sqlSession = factory.openSession();
@@ -79,7 +81,7 @@ public class CompraService {
 
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public List getCompras(){
+    public List getCompras(String accessToken, HttpRequest httpRequest){
         SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
         SqlSession sqlSession = factory.openSession();
         CompraMapper compraMapper = sqlSession.getMapper(CompraMapper.class);
@@ -92,7 +94,7 @@ public class CompraService {
 
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public Object getCompra(Integer id){
+    public Object getCompra(String accessToken, HttpRequest httpRequest,Integer id){
         SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
         SqlSession sqlSession = factory.openSession();
         CompraMapper compraMapper = sqlSession.getMapper(CompraMapper.class);
@@ -111,7 +113,7 @@ public class CompraService {
 
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public Object deleteCompra(Integer id){
+    public Object deleteCompra(String accessToken, HttpRequest httpRequest,Integer id){
         SqlSessionFactory factory = MybatisUtils.getSqlSessionFactory();
         SqlSession sqlSession = factory.openSession();
         try {
